@@ -2,19 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:skybuybd/apps/categories/presentation/blocs/category/category_bloc.dart';
-import 'package:skybuybd/apps/core/di.dart';
 import 'package:skybuybd/controller/category_controller.dart';
 import 'package:skybuybd/controller/home_controller.dart';
+import 'package:skybuybd/pages/auth/login/login_page.dart';
 import 'package:skybuybd/utils/app_colors.dart';
 import 'package:skybuybd/utils/constants.dart';
 import 'package:skybuybd/utils/dimentions.dart';
 
 import '../../controller/category_product_controller.dart';
 import '../../route/route_helper.dart';
+import '../home/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -24,6 +23,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+
   Future<void> _loadResources() async {
     await Get.find<HomeController>().getConversionRate();
     await Get.find<HomeController>().getShippingText();
@@ -51,67 +51,69 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    return BlocProvider.value(
-      value: injector<CategoryBloc>()..add(GetCategories()),
-      child: Scaffold(
-        body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: AppColors.primaryColor,
-            child: Stack(
-              children: [
-                Positioned(
-                  top: Dimensions.height200,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/logo/300w.png',
-                          height: Dimensions.height30 * 6,
-                          width: Dimensions.width30 * 5,
-                        ),
-                        //SizedBox(height: 5),
-                        const Text(
-                          'Sky Buy',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 48,
-                              fontFamily: 'times new roman'),
-                        ),
-                      ],
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: AppColors.primaryColor,
+        child:Stack(
+
+          children: [
+            Positioned(
+              top: Dimensions.height200,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/logo/300w.png',
+                      height: Dimensions.height30*6,
+                      width: Dimensions.width30*5,
                     ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: EdgeInsets.only(bottom: Dimensions.height50),
-                    child: const Center(
-                      child: Text(
-                        '\u00a9 ${Constants.APP_NAME}',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20),
+                    //SizedBox(height: 5),
+                    Text(
+                      'Sky Buy',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 48,
+                          fontFamily: 'times new roman'
                       ),
                     ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.only(bottom: Dimensions.height50),
+                child: const Center(
+                  child: Text(
+                    '\u00a9 ${Constants.APP_NAME}',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20
+                    ),
                   ),
                 ),
-              ],
-            )),
+              ),
+            ),
+          ],
+        )
       ),
     );
   }
 
   navigateToHome() async {
-    await Future.delayed(const Duration(milliseconds: Constants.delay), () {});
+    await Future.delayed(const Duration(milliseconds: Constants.delay),(){});
     Get.toNamed(RouteHelper.getInitial());
   }
+
 }
+

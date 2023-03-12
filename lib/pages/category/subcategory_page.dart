@@ -37,6 +37,7 @@ class SubCategoryPage extends StatefulWidget {
 }
 
 class _SubCategoryPageState extends State<SubCategoryPage> {
+
   late bool isUserLoggedIn;
   int selectedIndexBottom = -1;
 
@@ -48,17 +49,17 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
 
   _imageFromCamera() async {
     _image =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+    await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (_image != null) {
       setState(() {
         file = File(_image!.path);
       });
       //saveInStorage(file!);
-      if (file != null) {
+      if(file != null){
         //showCustomSnakebar("Image picked successfully",isError: false,title: "Image",color: AppColors.primaryColor);
         //Get.find<ProductController>().uploadImage(file!);
-        Get.toNamed(RouteHelper.getSearchPage("", "image", file!.path));
-      } else {
+        Get.toNamed(RouteHelper.getSearchPage("","image",file!.path));
+      }else{
         print("File is null");
       }
     }
@@ -71,13 +72,14 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         file = File(_image!.path);
       });
       //saveInStorage(file!);
-      if (file != null) {
+      if(file != null){
         //showCustomSnakebar("Image picked successfully",isError: false,title: "Image",color: AppColors.primaryColor);
         //Get.find<ProductController>().uploadImage(file!);
-        Get.toNamed(RouteHelper.getSearchPage("", "image", file!.path));
-      } else {
+        Get.toNamed(RouteHelper.getSearchPage("","image",file!.path));
+      }else{
         print("File is null");
       }
+
     }
   }
 
@@ -118,12 +120,11 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     isUserLoggedIn = Get.find<AuthController>().isUserLoggedIn();
   }
 
-  AppBar _buildAppBar(
-      FocusNode textFieldFocusNode, TextEditingController controller) {
+  AppBar _buildAppBar(FocusNode textFieldFocusNode,TextEditingController controller) {
     return AppBar(
       backgroundColor: AppColors.primaryColor,
       elevation: 0,
-      toolbarHeight: Dimensions.height10 * 10,
+      toolbarHeight: Dimensions.height10*10,
       centerTitle: false,
       automaticallyImplyLeading: false,
       title: GestureDetector(
@@ -137,10 +138,12 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         ),
       ),
       bottom: PreferredSize(
-          preferredSize: Size.fromHeight(Dimensions.height10 * 4),
+          preferredSize: Size.fromHeight(Dimensions.height10*4),
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width10, vertical: Dimensions.height10),
+                horizontal: Dimensions.width10,
+                vertical: Dimensions.height10
+            ),
             child: SizedBox(
               height: Dimensions.height45,
               child: TextField(
@@ -149,9 +152,9 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                     borderRadius: BorderRadius.circular(Dimensions.radius8),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.all(Dimensions.radius20 / 2),
+                  contentPadding: EdgeInsets.all(Dimensions.radius20/2),
                   prefixIcon: GestureDetector(
-                    onTap: () {
+                    onTap: (){
                       _showPicker(context);
                     },
                     child: const Icon(
@@ -160,18 +163,16 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                     ),
                   ),
                   suffixIcon: GestureDetector(
-                    onTap: () {
+                    onTap: (){
                       //Text Search
                       textFieldFocusNode.unfocus();
                       textFieldFocusNode.canRequestFocus = false;
 
                       String keyword = controller.text;
-                      if (keyword.isEmpty) {
-                        showCustomSnakebar("Search keyword is empty!",
-                            isError: false, title: "Search Error");
-                      } else {
-                        Get.toNamed(
-                            RouteHelper.getSearchPage(keyword, "keyword", ""));
+                      if(keyword.isEmpty){
+                        showCustomSnakebar("Search keyword is empty!",isError: false,title: "Search Error");
+                      }else{
+                        Get.toNamed(RouteHelper.getSearchPage(keyword,"keyword",""));
                       }
 
                       //Enable the text field's focus node request after some delay
@@ -200,7 +201,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                 ),
               ),
             ),
-          )),
+          )
+      ),
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -227,8 +229,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                     ),
                   ),
                   Positioned(
-                    right: 8,
-                    top: 5,
+                    right:8,
+                    top:5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -237,7 +239,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                   )
                 ],
               ),
-              onTap: () {
+              onTap: (){
                 //Goto Wishlist
                 Get.toNamed(RouteHelper.getWishListPage());
               },
@@ -263,8 +265,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                     ),
                   ),
                   Positioned(
-                    right: 8,
-                    top: 5,
+                    right:8,
+                    top:5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -273,7 +275,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                   )
                 ],
               ),
-              onTap: () {
+              onTap: (){
                 //Goto Cart
                 Get.toNamed(RouteHelper.getInitial());
               },
@@ -289,9 +291,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
               ),
               tooltip: 'Profile',
               onPressed: () {
-                isUserLoggedIn
-                    ? Get.toNamed(RouteHelper.getAccountPage())
-                    : Get.toNamed(RouteHelper.getLoginPage());
+                isUserLoggedIn ? Get.toNamed(RouteHelper.getAccountPage()) : Get.toNamed(RouteHelper.getLoginPage());
               },
             ),
           ],
@@ -302,26 +302,31 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+
     // Focus nodes are necessary
     final textFieldFocusNode = FocusNode();
     TextEditingController controller = TextEditingController();
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: AppColors.pageBg,
-      appBar: _buildAppBar(textFieldFocusNode, controller),
-      body: GetBuilder<CategoryController>(builder: (categoryController) {
-        return categoryController.isLoaded
-            ? _buildBody(categoryController)
-            : const Center(
-                child:
-                    CircularProgressIndicator(color: AppColors.primaryColor));
-      }),
-      bottomNavigationBar: _buildDiamondBottomNavigation(),
+    return WillPopScope(
+      child: Scaffold(
+        resizeToAvoidBottomInset : false,
+        backgroundColor: AppColors.pageBg,
+        appBar: _buildAppBar(textFieldFocusNode,controller),
+        body: GetBuilder<CategoryController>(builder: (categoryController){
+          return categoryController.isLoaded ? _buildBody(categoryController) : const Center(child: CircularProgressIndicator(color: AppColors.primaryColor));
+        }),
+        bottomNavigationBar: _buildDiamondBottomNavigation(),
+      ),
+      onWillPop: () async{
+        Get.toNamed(RouteHelper.getInitial());
+        return false;
+      },
     );
   }
 
-  Widget _buildDiamondBottomNavigation() {
+
+
+  Widget _buildDiamondBottomNavigation(){
     return DiamondBottomNavigation(
       itemIcons: const [
         CupertinoIcons.home,
@@ -329,12 +334,15 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         CupertinoIcons.cart,
         CupertinoIcons.chat_bubble,
       ],
-      itemName: const ['Home', 'Category', '', 'Cart', 'Chat'],
+      itemName: const [
+        'Home','Category','','Cart','Chat'
+      ],
       centerIcon: Icons.place,
       selectedIndex: selectedIndexBottom,
       onItemPressed: onPressed,
       selectedColor: AppColors.btnColorBlueDark,
       unselectedColor: Colors.black,
+
     );
   }
 
@@ -346,30 +354,30 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
           selectedIndexBottom = 0;
         });
         Get.toNamed(RouteHelper.getInitial());
-      } else if (index == 1) {
+      }else if (index == 1) {
         setState(() {
           selectedIndexBottom = 1;
         });
         Get.toNamed(RouteHelper.getInitial());
-      } else if (index == 2) {
+      }else if (index == 2) {
         //Refresh home page
         setState(() {
           selectedIndexBottom = 2;
         });
         Get.toNamed(RouteHelper.getInitial());
-      } else if (index == 3) {
+      }else if (index == 3) {
         //Cart Page
         setState(() {
           selectedIndexBottom = 3;
         });
         Get.toNamed(RouteHelper.getInitial());
-      } else if (index == 4) {
+      }else if (index == 4) {
         //Chat Page
         setState(() {
           selectedIndexBottom = 4;
         });
         Get.toNamed(RouteHelper.getInitial());
-      } else {
+      }else{
         setState(() {
           selectedIndexBottom = index;
         });
@@ -377,13 +385,9 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     });
   }
 
-  Widget _buildBody(CategoryController categoryController) {
+  Widget _buildBody(CategoryController categoryController){
     return Container(
-      padding: EdgeInsets.only(
-        left: Dimensions.width15,
-        right: Dimensions.width15,
-        top: Dimensions.width15,
-      ),
+      padding: EdgeInsets.only(left: Dimensions.width15,right: Dimensions.width15,top: Dimensions.width15,),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,23 +395,25 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
             Text(
               widget.subCatName,
               style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
-                  fontSize: Dimensions.font24),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: Dimensions.font24
+              ),
             ),
             SizedBox(height: Dimensions.height20),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () {
+                  onTap: (){
                     Get.toNamed(RouteHelper.getInitial());
                   },
                   child: Text(
                     'Home',
                     style: TextStyle(
-                        fontSize: Dimensions.font14,
-                        color: AppColors.primaryColor),
+                      fontSize: Dimensions.font14,
+                      color: AppColors.primaryColor
+                    ),
                   ),
                 ),
                 Icon(
@@ -419,7 +425,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                   widget.parentCatName,
                   style: TextStyle(
                       fontSize: Dimensions.font14,
-                      color: Colors.black.withOpacity(0.8)),
+                      color: Colors.black.withOpacity(0.8)
+                  ),
                 ),
                 Icon(
                   Icons.arrow_forward_ios,
@@ -430,7 +437,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                   widget.subCatName,
                   style: TextStyle(
                       fontSize: Dimensions.font14,
-                      color: Colors.black.withOpacity(0.8)),
+                      color: Colors.black.withOpacity(0.8)
+                  ),
                 ),
               ],
             ),
@@ -440,27 +448,21 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
               child: GridView.count(
                   physics: const NeverScrollableScrollPhysics(),
                   childAspectRatio: 1.0,
-                  padding: EdgeInsets.only(
-                      left: 0,
-                      right: 0,
-                      top: Dimensions.height10,
-                      bottom: Dimensions.height10),
+                  padding: EdgeInsets.only(left: 0, right: 0,top: Dimensions.height10,bottom: Dimensions.height10),
                   crossAxisCount: 2,
                   crossAxisSpacing: 2,
                   mainAxisSpacing: 2,
                   children: categoryController.subCategoryList.map((data) {
                     return GestureDetector(
                       onTap: () {
-                        Get.toNamed(RouteHelper.getCategoryProductPage(
-                            widget.parentCatName,
-                            widget.subCatName,
-                            data.name!,
-                            data.slug!));
+                        Get.toNamed(RouteHelper.getCategoryProductPage(widget.parentCatName, widget.subCatName, data.name!, data.slug!));
                       },
                       child: Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(0)),
+                            borderRadius: BorderRadius.circular(0)
+                        ),
+
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -477,10 +479,12 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                               style: TextStyle(
                                   color: Colors.black87,
                                   fontSize: Dimensions.font14,
-                                  fontWeight: FontWeight.w600),
+                                  fontWeight: FontWeight.w600
+                              ),
                             ),
                           ],
                         ),
+
                       ),
                     );
                   }).toList()),
@@ -493,10 +497,11 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
 }
 
 //SubCategory Item
-class SubCategory {
+class SubCategory{
   int id;
   String title;
   String img;
 
-  SubCategory(this.id, this.title, this.img);
+  SubCategory(this.id,this.title, this.img);
+
 }

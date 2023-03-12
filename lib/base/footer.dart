@@ -21,7 +21,7 @@ class Footer extends StatelessWidget {
           //Col-1
           Image.asset(
             'assets/logo/foterlogo.png',
-            height: 60,
+            height: 100,
             width: 200,
             scale: 1.0,
             fit: BoxFit.contain,
@@ -41,7 +41,8 @@ class Footer extends StatelessWidget {
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
-                    fontSize: 16),
+                    fontSize: 16
+                ),
                 textAlign: TextAlign.start,
               ),
             ],
@@ -50,7 +51,10 @@ class Footer extends StatelessWidget {
           Text(
             'House#42, Road-3/A, Dhanmondi, Dhaka-1209, Bangladesh',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           //Email
@@ -69,7 +73,8 @@ class Footer extends StatelessWidget {
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
-                    fontSize: 16),
+                    fontSize: 16
+                ),
                 textAlign: TextAlign.start,
               ),
             ],
@@ -78,7 +83,10 @@ class Footer extends StatelessWidget {
           const Text(
             'skybuybd@gmail.com',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           //Phone
@@ -97,7 +105,8 @@ class Footer extends StatelessWidget {
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
-                    fontSize: 16),
+                    fontSize: 16
+                ),
                 textAlign: TextAlign.start,
               ),
             ],
@@ -106,7 +115,10 @@ class Footer extends StatelessWidget {
           const Text(
             '09613828606',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           //Col-2
@@ -124,42 +136,60 @@ class Footer extends StatelessWidget {
           const Text(
             'About Us',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Contact Us',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Privacy Policy',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Return and Refund Policy',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Secured Payment',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Transparency',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           //Col-3
@@ -177,49 +207,70 @@ class Footer extends StatelessWidget {
           const Text(
             'How To Buy',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Shipping & Delivery',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Custom & Shipping Charge',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Delivery Charges',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Minimum Order Quantity',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'Prohibited Items',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           SizedBox(height: 5),
           const Text(
             'FAQ',
             style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
             textAlign: TextAlign.start,
           ),
           //Col-4
@@ -274,9 +325,10 @@ class Footer extends StatelessWidget {
                     const Text(
                       'Sky Buy',
                       style: TextStyle(
-                          color: Color(0xFF0061B2),
-                          fontSize: 44,
-                          fontWeight: FontWeight.w800),
+                        color: Color(0xFF0061B2),
+                        fontSize: 44,
+                        fontWeight: FontWeight.w800
+                      ),
                     ),
                     SizedBox(height: 30),
                     Row(

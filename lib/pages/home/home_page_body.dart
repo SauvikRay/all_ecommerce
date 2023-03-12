@@ -52,7 +52,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       setState(() {
         //priceFactor = Get.find<HomeController>().isConversionPriceLoaded ? Get.find<HomeController>().conversionPrice : 20.0;
         if( Get.find<HomeController>().getSharedPref().containsKey(Constants.CONVERSION_RATE)){
@@ -145,7 +145,7 @@ class _HomePageBodyState extends State<HomePageBody> {
       child: ImageSlideshow(
         indicatorColor: Colors.blue,
         onPageChanged: (value) {
-          // debugPrint('Page changed: $value');
+          debugPrint('Page changed: $value');
         },
         autoPlayInterval: 3000,
         isLoop: true,

@@ -136,6 +136,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    print("okkkk");
   }
 
   @override
@@ -152,7 +153,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: _buildAppBar(textFieldFocusNode,controller),
-        drawer: const ComplexDrawer1(),
+        drawer: ComplexDrawer1(),
         resizeToAvoidBottomInset: false,
         body: pages[selectedIndex],
         bottomNavigationBar: _buildDiamondBottomNavigation(selectedIndex),

@@ -1,12 +1,31 @@
 
+import 'dart:convert';
 import 'dart:core';
-import 'dart:developer';
-
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:skybuybd/data/repository/cart_repo.dart';
-
+import 'package:skybuybd/data/repository/order_repo.dart';
+import 'package:skybuybd/data/repository/product_repo.dart';
+import 'package:skybuybd/models/category/category_product_model.dart';
+import 'package:skybuybd/models/invoice_model.dart';
+import 'package:skybuybd/models/order_model.dart';
+import 'package:skybuybd/models/product_details/product_details.dart';
+import 'package:skybuybd/models/product_details/product_details_model.dart';
+import 'package:skybuybd/models/user_address_model.dart';
+import 'package:skybuybd/pages/product/single_product_page.dart';
+import 'package:skybuybd/pages/wishlist/wishlist_page.dart';
+import '../data/repository/category_product_repo.dart';
+import '../data/repository/category_repo.dart';
+import '../data/service/ImageService.dart';
 import '../models/cart_model.dart';
+import '../models/category/category_model.dart';
+import 'package:http/http.dart' as http;
+import '../models/home/picture_model.dart';
+import '../models/product/color_image.dart';
+import '../models/product/product_size.dart';
+import '../models/product/small_image.dart';
 import '../models/response_model.dart';
 import '../models/wishlist_model.dart';
 
@@ -123,9 +142,6 @@ class CartController extends GetxController implements GetxService{
     update();
 
     Response response = await cartRepo.getCartList();
-
-    log('getCartList $response');
-
     late ResponseModel responseModel;
     if(response.statusCode == 200){
 
