@@ -23,7 +23,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   Future<void> _loadResources() async {
     await Get.find<HomeController>().getConversionRate();
     await Get.find<HomeController>().getShippingText();
@@ -51,69 +50,65 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: AppColors.primaryColor,
-        child:Stack(
-
-          children: [
-            Positioned(
-              top: Dimensions.height200,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/logo/300w.png',
-                      height: Dimensions.height30*6,
-                      width: Dimensions.width30*5,
-                    ),
-                    //SizedBox(height: 5),
-                    Text(
-                      'Sky Buy',
+          width: double.infinity,
+          height: double.infinity,
+          color: AppColors.primaryColor,
+          child: Stack(
+            children: [
+              Positioned(
+                top: Dimensions.height200,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/logo/300w.png',
+                        height: Dimensions.height30 * 6,
+                        width: Dimensions.width30 * 5,
+                      ),
+                      //SizedBox(height: 5),
+                      Text(
+                        'Sky Buy',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 48,
+                            fontFamily: 'times new roman'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.only(bottom: Dimensions.height50),
+                  child: const Center(
+                    child: Text(
+                      '\u00a9 ${Constants.APP_NAME}',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontSize: 48,
-                          fontFamily: 'times new roman'
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: EdgeInsets.only(bottom: Dimensions.height50),
-                child: const Center(
-                  child: Text(
-                    '\u00a9 ${Constants.APP_NAME}',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20
+                          fontSize: 20),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        )
-      ),
+            ],
+          )),
     );
   }
 
   navigateToHome() async {
-    await Future.delayed(const Duration(milliseconds: Constants.delay),(){});
-    Get.toNamed(RouteHelper.getInitial());
+    await Future.delayed(const Duration(milliseconds: Constants.delay), () {});
+    // Get.toNamed(RouteHelper.getInitial());
+    Get.toNamed(RouteHelper.getSingleProductPage("abb-624289340878"));
   }
-
 }
-
