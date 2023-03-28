@@ -1,7 +1,7 @@
-
 import '../category/category_product_model.dart';
 import '../home/picture_model.dart';
 import '../home/price_model.dart';
+import '../product/product_size.dart';
 
 class ProductDetails {
   List<QuantityRange>? quantityRanges;
@@ -29,7 +29,7 @@ class ProductDetails {
   Location? location;
   List<FeaturedValues>? featureValues;
   bool? isSellAllowed;
-  PhysicalParameters? physicalParameters;
+  // PhysicalParameters? physicalParameters;
   bool? isFiltered;
   bool? hasInternalDelivery;
   List<DeliveryCost>? deliveryCost;
@@ -41,47 +41,45 @@ class ProductDetails {
   List<WeightInfo>? weightInfo;
   WeightInfo? actualWeightInfo;
 
-  ProductDetails({
-    this.quantityRanges,
-    this.id,
-    this.errorCode,
-    this.hasError,
-    this.providerType,
-    this.updatedTime,
-    this.title,
-    this.originalTitle,
-    this.categoryId,
-    this.externalCategoryId,
-    this.vendorId,
-    this.vendorName,
-    this.vendorDisplayName,
-    this.vendorScore,
-    this.taobaoItemUrl,
-    this.externalItemUrl,
-    this.mainPictureUrl,
-    this.stuffStatus,
-    this.volume,
-    this.price,
-    this.masterQuantity,
-    this.pictures,
-    this.location,
-    this.featureValues,
-    this.isSellAllowed,
-    this.physicalParameters,
-    this.isFiltered,
-    this.hasInternalDelivery,
-    this.deliveryCost,
-    this.attributes,
-    this.hasHierarchicalConfigurators,
-    this.configuredItems,
-    this.firstLotQuantity,
-    this.nextLotQuantity,
-    this.weightInfo,
-    this.actualWeightInfo
-  });
+  ProductDetails(
+      {this.quantityRanges,
+      this.id,
+      this.errorCode,
+      this.hasError,
+      this.providerType,
+      this.updatedTime,
+      this.title,
+      this.originalTitle,
+      this.categoryId,
+      this.externalCategoryId,
+      this.vendorId,
+      this.vendorName,
+      this.vendorDisplayName,
+      this.vendorScore,
+      this.taobaoItemUrl,
+      this.externalItemUrl,
+      this.mainPictureUrl,
+      this.stuffStatus,
+      this.volume,
+      this.price,
+      this.masterQuantity,
+      this.pictures,
+      this.location,
+      this.featureValues,
+      this.isSellAllowed,
+      // this.physicalParameters,
+      this.isFiltered,
+      this.hasInternalDelivery,
+      this.deliveryCost,
+      this.attributes,
+      this.hasHierarchicalConfigurators,
+      this.configuredItems,
+      this.firstLotQuantity,
+      this.nextLotQuantity,
+      this.weightInfo,
+      this.actualWeightInfo});
 
   ProductDetails.fromJson(Map<String, dynamic> json) {
-
     if (json['QuantityRanges'] != null) {
       quantityRanges = <QuantityRange>[];
       json['QuantityRanges'].forEach((v) {
@@ -114,7 +112,8 @@ class ProductDetails {
         pictures!.add(PictureModel.fromJson(v));
       });
     }
-    location = json['Location'] != null ? Location.fromJson(json['Location']) : null;
+    location =
+        json['Location'] != null ? Location.fromJson(json['Location']) : null;
     if (json['FeaturedValues'] != null) {
       featureValues = <FeaturedValues>[];
       json['FeaturedValues'].forEach((v) {
@@ -122,7 +121,9 @@ class ProductDetails {
       });
     }
     isSellAllowed = json['IsSellAllowed'];
-    physicalParameters = json['PhysicalParameters'] != null ? PhysicalParameters.fromJson(json["PhysicalParameters"]) : null;
+    // physicalParameters = json['PhysicalParameters'] != null
+    //     ? PhysicalParameters.fromJson(json["PhysicalParameters"])
+    //     : null;
     isFiltered = json['IsFiltered'];
     hasInternalDelivery = json['HasInternalDelivery'];
     if (json['DeliveryCosts'] != null) {
@@ -152,14 +153,17 @@ class ProductDetails {
         weightInfo!.add(WeightInfo.fromJson(v));
       });
     }
-    actualWeightInfo = json['ActualWeightInfo'] != null ? WeightInfo.fromJson(json["ActualWeightInfo"]) : null;
+    actualWeightInfo = json['ActualWeightInfo'] != null
+        ? WeightInfo.fromJson(json["ActualWeightInfo"])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
 
     if (this.quantityRanges != null) {
-      data['QuantityRanges'] = this.quantityRanges!.map((v) => v.toJson()).toList();
+      data['QuantityRanges'] =
+          this.quantityRanges!.map((v) => v.toJson()).toList();
     }
     data['Id'] = this.id;
     data['ErrorCode'] = this.errorCode;
@@ -190,23 +194,26 @@ class ProductDetails {
       data['Location'] = this.location!.toJson();
     }
     if (this.featureValues != null) {
-      data['FeaturedValues'] = this.featureValues!.map((v) => v.toJson()).toList();
+      data['FeaturedValues'] =
+          this.featureValues!.map((v) => v.toJson()).toList();
     }
     data['IsSellAllowed'] = this.isSellAllowed;
-    if (this.physicalParameters != null) {
-      data['PhysicalParameters'] = this.physicalParameters!.toJson();
-    }
+    // if (this.physicalParameters != null) {
+    //   data['PhysicalParameters'] = this.physicalParameters!.toJson();
+    // }
     data['IsFiltered'] = this.isFiltered;
     data['HasInternalDelivery'] = this.hasInternalDelivery;
     if (this.deliveryCost != null) {
-      data['DeliveryCosts'] = this.deliveryCost!.map((v) => v.toJson()).toList();
+      data['DeliveryCosts'] =
+          this.deliveryCost!.map((v) => v.toJson()).toList();
     }
     if (this.attributes != null) {
       data['Attributes'] = this.attributes!.map((v) => v.toJson()).toList();
     }
     data['HasHierarchicalConfigurators'] = this.hasHierarchicalConfigurators;
     if (this.configuredItems != null) {
-      data['ConfiguredItems'] = this.configuredItems!.map((v) => v.toJson()).toList();
+      data['ConfiguredItems'] =
+          this.configuredItems!.map((v) => v.toJson()).toList();
     }
     data['FirstLotQuantity'] = this.firstLotQuantity;
     data['NextLotQuantity'] = this.nextLotQuantity;
@@ -224,7 +231,6 @@ class ProductDetails {
   String toString() {
     return toJson().toString();
   }
-
 }
 
 class DeliveryCost {
@@ -236,15 +242,14 @@ class DeliveryCost {
   int? addWeight;
   int? addCost;
 
-  DeliveryCost({
-    this.areaCode,
-    this.mode,
-    this.price,
-    this.startCost,
-    this.startWeight,
-    this.addWeight,
-    this.addCost
-  });
+  DeliveryCost(
+      {this.areaCode,
+      this.mode,
+      this.price,
+      this.startCost,
+      this.startWeight,
+      this.addWeight,
+      this.addCost});
 
   DeliveryCost.fromJson(Map<String, dynamic> json) {
     areaCode = json['AreaCode'];
@@ -282,17 +287,16 @@ class Attribute {
   String? imageUrl;
   String? miniImageUrl;
 
-  Attribute({
-    this.pid,
-    this.vid,
-    this.propertyName,
-    this.value,
-    this.originalPropertyName,
-    this.originalValue,
-    this.isConfigurator,
-    this.imageUrl,
-    this.miniImageUrl
-  });
+  Attribute(
+      {this.pid,
+      this.vid,
+      this.propertyName,
+      this.value,
+      this.originalPropertyName,
+      this.originalValue,
+      this.isConfigurator,
+      this.imageUrl,
+      this.miniImageUrl});
 
   Attribute.fromJson(Map<String, dynamic> json) {
     pid = json['Pid'];
@@ -328,14 +332,17 @@ class ConfiguredItems {
   List<Configurators>? configurators;
   Price? price;
   List<QuantityRanges>? quantityRanges;
+  List<ProductSize>? productSizeList;
 
   ConfiguredItems(
       {this.id,
-        this.quantity,
-        this.salesCount,
-        this.configurators,
-        this.price,
-        this.quantityRanges});
+      this.quantity,
+      this.salesCount,
+      this.configurators,
+      this.price,
+      this.quantityRanges,
+      this.productSizeList,
+      });
 
   ConfiguredItems.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -402,9 +409,8 @@ class ConvertedPriceList {
   ConvertedPriceList({this.internal, this.displayedMoneys});
 
   ConvertedPriceList.fromJson(Map<String, dynamic> json) {
-    internal = json['Internal'] != null
-        ? Internal.fromJson(json['Internal'])
-        : null;
+    internal =
+        json['Internal'] != null ? Internal.fromJson(json['Internal']) : null;
     if (json['DisplayedMoneys'] != null) {
       displayedMoneys = <DisplayedMoneys>[];
       json['DisplayedMoneys'].forEach((v) {
@@ -490,4 +496,3 @@ class WeightInfo {
     return data;
   }
 }
-

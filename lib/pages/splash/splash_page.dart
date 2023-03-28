@@ -6,12 +6,15 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:skybuybd/controller/category_controller.dart';
 import 'package:skybuybd/controller/home_controller.dart';
+import 'package:skybuybd/models/product_details/product_details.dart';
 import 'package:skybuybd/pages/auth/login/login_page.dart';
 import 'package:skybuybd/utils/app_colors.dart';
 import 'package:skybuybd/utils/constants.dart';
 import 'package:skybuybd/utils/dimentions.dart';
 
 import '../../controller/category_product_controller.dart';
+import '../../new_cart/chatgpt.dart';
+import '../../new_cart/product_details_screen.dart';
 import '../../route/route_helper.dart';
 import '../home/home_page.dart';
 
@@ -45,7 +48,7 @@ class _SplashPageState extends State<SplashPage> {
       print(Dimensions.screenWidth);
     }
 
-    navigateToHome();
+    navigateToHome(context);
   }
 
   @override
@@ -106,9 +109,18 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  navigateToHome() async {
+  navigateToHome(BuildContext context) async {
     await Future.delayed(const Duration(milliseconds: Constants.delay), () {});
+    if(mounted){
+    Navigator.pushNamed(context,RouteHelper.getInitial(),);
+    }
+
+    
     // Get.toNamed(RouteHelper.getInitial());
-    Get.toNamed(RouteHelper.getSingleProductPage("abb-624289340878"));
+    // Get.toNamed(RouteHelper.getSingleProductPage("abb-675994746146"));
+    // Get.toNamed(RouteHelper.getSingleProductPage("abb-637685900967"));
+    // Get.toNamed(RouteHelper.getSingleProductPage("abb-669706795349"));
+    // Navigator.pushReplacement(context,
+    //     MaterialPageRoute(builder: (context) => ProdyctDetailsScreen()));
   }
 }

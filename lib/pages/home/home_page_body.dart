@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:skybuybd/base/footer.dart';
 import 'package:skybuybd/base/show_custom_snakebar.dart';
 import 'package:skybuybd/controller/auth_controller.dart';
@@ -18,6 +21,8 @@ import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/app_icon.dart';
 import 'package:get/get.dart';
+
+import '../category/category_page.dart';
 
 class HomePageBody extends StatefulWidget {
   HomePageBody({Key? key}) : super(key: key);
@@ -87,7 +92,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         //priceFactor = Get.find<HomeController>().isConversionPriceLoaded ? Get.find<HomeController>().conversionPrice : 20.0;
         if (Get.find<HomeController>()
@@ -392,38 +397,17 @@ class _HomePageBodyState extends State<HomePageBody> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () {
-                            CategoryModel data = catList[idx];
-                            //Get.toNamed(RouteHelper.getSubCategoryPage(data.name!,data.slug!));
-                            showCustomSnakebar("Please wait...",
-                                isError: false,
-                                title: "Category",
-                                color: Colors.green);
-                            Get.find<CategoryController>()
-                                .getSubCategoryList(data.slug!)
-                                .then((response) {
-                              if (response.isSuccess) {
-                                if (response.message == "child") {
-                                  if (kDebugMode) {
-                                    print("Going to subcategory page");
-                                  }
-                                  //Child exist
-                                  Get.toNamed(RouteHelper.getSubCategoryPage(
-                                      data.name!, data.slug!));
-                                } else if (response.message == "product") {
-                                  if (kDebugMode) {
-                                    print("Going to product page");
-                                  }
-                                  //Product exist
-                                  Get.toNamed(
-                                      RouteHelper.getCategoryProductPage(
-                                          data.name!, "", "", data.slug!));
-                                }
-                              } else {
-                                if (kDebugMode) {
-                                  print("Error homepage category item click;");
-                                }
-                              }
-                            });
+                                                       CategoryModel data = catList[idx];
+                            log(data.slug!);
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: CategoryPage(
+                                  parentCatName: data.name!,
+                                  parentCatSlug: data.slug!),
+                              withNavBar: true,
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
                           },
                           child: Container(
                             decoration: BoxDecoration(

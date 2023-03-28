@@ -1,10 +1,11 @@
 class ConversionRate {
-  double? rate;
+  // double? rate;
+  dynamic rate;
 
   ConversionRate({this.rate});
 
   ConversionRate.fromJson(Map<String, dynamic> json) {
-    rate = json['rate'];
+    rate = json['rate'].toDouble();
   }
 
   Map<String, dynamic> toJson() {

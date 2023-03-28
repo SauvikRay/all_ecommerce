@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:skybuybd/route/route_helper.dart';
@@ -7,6 +8,7 @@ import 'package:skybuybd/utils/constants.dart';
 import 'package:skybuybd/helper/dependencies.dart' as dep;
 
 import 'provider/cart_provider.dart';
+import 'provider/category_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +25,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<CartProvider>(
           create: (context) => CartProvider(),
+        ),
+        ChangeNotifierProvider<CategoryProvider>(
+          create: (context) => CategoryProvider(),
         )
       ],
       child: GetMaterialApp(
@@ -38,6 +43,7 @@ class MyApp extends StatelessWidget {
         //home: HomePage(),
         //home: CategoryPage(parentCatId: 1,catName: 'Baby Items'),
         //home: SingleProductPage(),
+        builder: EasyLoading.init(),
       ),
     );
 

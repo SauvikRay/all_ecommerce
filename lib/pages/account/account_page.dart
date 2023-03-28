@@ -15,6 +15,7 @@ import 'package:skybuybd/controller/home_controller.dart';
 import 'package:skybuybd/controller/order_controller.dart';
 import 'package:skybuybd/models/user_address_model.dart';
 import 'package:skybuybd/widgets/big_text.dart';
+import '../../common_widgets/appbar.dart';
 import '../../controller/auth_controller.dart';
 import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
@@ -184,7 +185,7 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFFF1F1F1),
-      appBar: _buildAppBar(textFieldFocusNode,controller),
+      appBar: CustomAppbar(),
       body: isUserLoggedIn ? Container(
         child: SingleChildScrollView(
           child: Column(
