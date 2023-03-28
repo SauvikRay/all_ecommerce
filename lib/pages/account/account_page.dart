@@ -186,105 +186,107 @@ class _AccountPageState extends State<AccountPage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFFF1F1F1),
       appBar: CustomAppbar(),
-      body: isUserLoggedIn ? Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: Dimensions.height10/5),
-              //Menu List
-              Container(
-                height: Dimensions.height200-Dimensions.height30,
-                width: double.infinity,
-                color: Colors.white,
-                padding: EdgeInsets.only(top: Dimensions.height15),
-                child: GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    childAspectRatio: 4/1,
-                    padding: EdgeInsets.only(left: Dimensions.width15, right: Dimensions.width15),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 1,
-                    mainAxisSpacing: 1,
+      body: isUserLoggedIn ? 
+      SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        physics:const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            SizedBox(height: Dimensions.height10/5),
+            //Menu List
+            Container(
+              height: Dimensions.height200-Dimensions.height30,
+              width: double.infinity,
+              color: Colors.white,
+              padding: EdgeInsets.only(top: Dimensions.height15),
+              child: GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 4/1,
+                  padding: EdgeInsets.only(left: Dimensions.width15, right: Dimensions.width15),
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 1,
+                  mainAxisSpacing: 1,
 
-                    children: gridItems.map((data) {
-                      return GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            selectedIndex = data.id;
-                          });
+                  children: gridItems.map((data) {
+                    return GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = data.id;
+                        });
 
-                          if(selectedIndex == 2){
-                            Get.find<OrderController>().getCustomerOrderList();
-                          }else if(selectedIndex == 3){
-                            Get.find<OrderController>().getCustomerOrderInvoiceList();
-                          }else if(selectedIndex == 4){
-                            Get.find<OrderController>().getCustomerAddressList();
-                          }
+                        if(selectedIndex == 2){
+                          Get.find<OrderController>().getCustomerOrderList();
+                        }else if(selectedIndex == 3){
+                          Get.find<OrderController>().getCustomerOrderInvoiceList();
+                        }else if(selectedIndex == 4){
+                          Get.find<OrderController>().getCustomerAddressList();
+                        }
 
-                          if(selectedIndex == 8){
-                            _logout();
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: BorderSide(
-                                color: data.icon != null ? AppColors.borderColor.withOpacity(0.3) : Colors.white
-                              ),
-                              bottom: BorderSide(
-                                color: data.icon != null ? AppColors.borderColor.withOpacity(0.3) : Colors.white
-                              ),
+                        if(selectedIndex == 8){
+                          _logout();
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              color: data.icon != null ? AppColors.borderColor.withOpacity(0.3) : Colors.white
                             ),
-                            color: selectedIndex == (data.id)  ? AppColors.borderColor : Colors.white,
+                            bottom: BorderSide(
+                              color: data.icon != null ? AppColors.borderColor.withOpacity(0.3) : Colors.white
+                            ),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: Dimensions.width10,vertical: Dimensions.width8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[ //SizedBox
-                              data.icon == null ? Container() : Icon(data.icon!),
-                              SizedBox(width: Dimensions.width15),
-                              data.icon == null ? Container() : Expanded(
-                                child: Text(
-                                  data.menuTitle!,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font14,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              ) //Text
-                              //Checkbox
-                            ], //<Widget>[]
-                          ),
+                          color: selectedIndex == (data.id)  ? AppColors.borderColor : Colors.white,
                         ),
-                      );
-                    }).toList()),
-              ),
-              SizedBox(height: Dimensions.height10/2),
-              if(selectedIndex == 1)...[
-                _buildNewDashboardContainer(context)
-              ]else if(selectedIndex == 2)...[
-                _buildOrderContainer()
-              ]else if(selectedIndex == 3)...[
-                _buildItemDetailsContainer()
-              ]else if(selectedIndex == 4)...[
-                _buildInvoiceContainer()
-              ]else if(selectedIndex == 5)...[
-                _buildAddressContainer()
-              ]else if(selectedIndex == 6)...[
-                _buildAccountDetailContainer()
-              ]else...[
-                Container()
-              ],
-              Divider(
-                height: 1,
-                thickness: Dimensions.height10,
-                color: AppColors.primaryColor,
-              ),
-              const Footer(),
+                        padding: EdgeInsets.symmetric(horizontal: Dimensions.width10,vertical: Dimensions.width8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[ //SizedBox
+                            data.icon == null ? Container() : Icon(data.icon!),
+                            SizedBox(width: Dimensions.width15),
+                            data.icon == null ? Container() : Expanded(
+                              child: Text(
+                                data.menuTitle!,
+                                style: TextStyle(
+                                    fontSize: Dimensions.font14,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            ) //Text
+                            //Checkbox
+                          ], //<Widget>[]
+                        ),
+                      ),
+                    );
+                  }).toList()),
+            ),
+            SizedBox(height: Dimensions.height10/2),
+            if(selectedIndex == 1)...[
+              _buildNewDashboardContainer(context)
+            ]else if(selectedIndex == 2)...[
+              _buildOrderContainer()
+            ]else if(selectedIndex == 3)...[
+              _buildItemDetailsContainer()
+            ]else if(selectedIndex == 4)...[
+              _buildInvoiceContainer()
+            ]else if(selectedIndex == 5)...[
+              _buildAddressContainer()
+            ]else if(selectedIndex == 6)...[
+              _buildAccountDetailContainer()
+            ]else...[
+              Container()
             ],
-          ),
+            Divider(
+              height: 1,
+              thickness: Dimensions.height10,
+              color: AppColors.primaryColor,
+            ),
+            const Footer(),
+          ],
         ),
-      ) : _buildBodyNonUser(width),
+      ) 
+    : _buildBodyNonUser(width),
     );
   }
 

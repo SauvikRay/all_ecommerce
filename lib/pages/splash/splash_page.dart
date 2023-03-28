@@ -31,11 +31,11 @@ class _SplashPageState extends State<SplashPage> {
     await Get.find<HomeController>().getShippingText();
     await Get.find<HomeController>().getHomePageItem();
     await Get.find<CategoryController>().getParentCategoryList();
-    await Get.find<CategoryProductController>().getShoeList();
-    await Get.find<CategoryProductController>().getBagList();
-    await Get.find<CategoryProductController>().getJewelryList();
-    await Get.find<CategoryProductController>().getBabyList();
-    await Get.find<CategoryProductController>().getWatchList();
+    // await Get.find<CategoryProductController>().getShoeList();
+    // await Get.find<CategoryProductController>().getBagList();
+    // await Get.find<CategoryProductController>().getJewelryList();
+    // await Get.find<CategoryProductController>().getBabyList();
+    // await Get.find<CategoryProductController>().getWatchList();
   }
 
   @override

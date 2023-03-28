@@ -54,13 +54,13 @@ class _LoginState extends State<Login> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: CustomAppbar(), //_buildAppBar(),
+        appBar: CustomAppbar(),
       body: GetBuilder<AuthController>(builder: (authController) {
         return !authController.isLoading
             ? _buildBody(width, authController)
             : const CustomLoader();
       }),
-      bottomNavigationBar: _buildBottomNavigation(selectedIndex),
+      // bottomNavigationBar: _buildBottomNavigation(selectedIndex),
     );
   }
 
@@ -282,6 +282,7 @@ class _LoginState extends State<Login> {
       height: isEmailSelected ? 520 + 740 : 500 + 740,
       color: Colors.grey,
       child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Column(
           children: [
             Container(

@@ -100,8 +100,8 @@ class RouteHelper {
           return OtpPage(phone: phone!);
         },
         transition: Transition.fadeIn),
-    GetPage(
-        name: loginPage, page: () => Login(), transition: Transition.fadeIn),
+    // GetPage(
+    //     name: loginPage, page: () => Login(), transition: Transition.fadeIn),
     GetPage(
         name: registerPage,
         page: () => Registration(),

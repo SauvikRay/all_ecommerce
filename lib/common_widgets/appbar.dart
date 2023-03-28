@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:skybuybd/models/wishlist_model.dart';
 import 'package:skybuybd/pages/account/account_page.dart';
 import 'package:skybuybd/pages/auth/login.dart';
 
 import '../base/show_custom_snakebar.dart';
 import '../controller/auth_controller.dart';
+import '../global_variable.dart';
 import '../pages/cart/cart_page.dart';
 import '../pages/product/search_product.dart';
 import '../pages/wishlist/wishlist_page.dart';
@@ -230,19 +232,34 @@ class _CustomAppbarState extends State<CustomAppbar> {
               ),
               tooltip: 'Profile',
               onPressed: () {
-                isUserLoggedIn
+                if(islogin==0){
+                    isUserLoggedIn
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const AccountPage(),
                         ),
                       )
-                    : Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Login(),
-                        ),
-                         (route) => false);
+                    :  PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: Login(),
+                      withNavBar: true,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                    
+
+                }
+               
+                    setState(() {
+                      islogin=1;
+                    });
+                    // Navigator.pushAndRemoveUntil(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => const Login(),
+                    //     ),
+                    //      (route) => false);
               },
             ),
           ],

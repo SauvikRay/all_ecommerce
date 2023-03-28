@@ -161,15 +161,19 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     );
                         }),
                         SizedBox(height: Dimensions.height15),
-                        _buildProductGridShoe(categoryProductController),
+                        _buildProductGridShoe('SHOE',homeController.shoes),
                         SizedBox(height: Dimensions.height15),
-                        _buildProductGridBag(categoryProductController),
+                        // _buildProductGridBag(homeController),
+                         _buildProductGridShoe('BAGS',homeController.bag),
                         SizedBox(height: Dimensions.height15),
-                        _buildProductGridJewelry(categoryProductController),
+                        // _buildProductGridJewelry(homeController),
+                        _buildProductGridShoe('JEWELRY',homeController.jewelry),
                         SizedBox(height: Dimensions.height15),
-                        _buildProductGridBaby(categoryProductController),
+                        // _buildProductGridBaby(homeController),
+                        _buildProductGridShoe('Baby items',homeController.baby),
                         SizedBox(height: Dimensions.height15),
-                        _buildProductGridWatch(categoryProductController),
+                        // _buildProductGridWatch(homeController),
+                          _buildProductGridShoe('WATCH',homeController.watch),
                         SizedBox(height: Dimensions.height15 * 1.5),
                         const Footer()
                       ],
@@ -457,7 +461,9 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Widget _buildProductGridShoe(
-      CategoryProductController categoryProductController) {
+      // HomeController homeController
+      String headingText,List controllerdata
+      ) {
     return Container(
       width: double.maxFinite,
       color: Colors.white,
@@ -479,7 +485,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'SHOE'.toUpperCase(),
+                    headingText.toUpperCase(),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: Dimensions.font18,
@@ -490,8 +496,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                     children: [
                       TextButton(
                           onPressed: () {
-                            Get.toNamed(RouteHelper.getCategoryProductPage(
-                                "Shoe", "", "", "shoes"));
+                            // Get.toNamed(RouteHelper.getCategoryProductPage(
+                            //     "Shoe", "", "", "shoes"));
                           },
                           style: ButtonStyle(
                               padding: MaterialStateProperty.all<EdgeInsets>(
@@ -542,10 +548,10 @@ class _HomePageBodyState extends State<HomePageBody> {
                 crossAxisCount: 2,
                 crossAxisSpacing: Dimensions.width15,
                 mainAxisSpacing: Dimensions.width15,
-                children: categoryProductController.shoesList.map((data) {
+                children: controllerdata.map((data) {
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
+                      Get.toNamed(RouteHelper.getSingleProductPage(data.itemId!));
                     },
                     child: Container(
                       decoration: const BoxDecoration(
@@ -602,33 +608,34 @@ class _HomePageBodyState extends State<HomePageBody> {
                             ),
                           ),
                           //Product Price
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: AppColors.productPriceColor,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  'SOLD: ${setTotalSold(data)}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.symmetric(
+                          //       horizontal: Dimensions.width15,
+                          //       vertical: Dimensions.height10 / 2),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: [
+                          //       Text(
+                          //         '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
+                          //         textAlign: TextAlign.end,
+                          //         overflow: TextOverflow.ellipsis,
+                          //         style: TextStyle(
+                          //             fontSize: Dimensions.font12,
+                          //             color: AppColors.productPriceColor,
+                          //             fontWeight: FontWeight.w700),
+                          //       ),
+                          //       Text(
+                          //         'SOLD: ${setTotalSold(data)}',
+                          //         textAlign: TextAlign.end,
+                          //         overflow: TextOverflow.ellipsis,
+                          //         style: TextStyle(
+                          //             fontSize: Dimensions.font12,
+                          //             color: Colors.grey),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                        
                         ],
                       ),
                     ),
@@ -640,736 +647,741 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  Widget _buildProductGridBag(
-      CategoryProductController categoryProductController) {
-    return Container(
-      width: double.maxFinite,
-      color: Colors.white,
-      padding: EdgeInsets.only(
-          top: Dimensions.height10,
-          bottom: 0,
-          left: Dimensions.width10 / 2,
-          right: Dimensions.width10 / 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: double.maxFinite,
-            padding: EdgeInsets.zero,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'BAGS'.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: Dimensions.font18,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Get.toNamed(RouteHelper.getCategoryProductPage(
-                                "Bag", "", "", "bags"));
-                          },
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      horizontal: Dimensions.width15,
-                                      vertical: Dimensions.height10 / 2)),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  AppColors.primaryColor),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.radius15 / 3),
-                                  //side: BorderSide(color: Colors.red)
-                                ),
-                              )),
-                          child: Text(
-                            'View More',
-                            style: TextStyle(
-                                fontSize: Dimensions.font12,
-                                letterSpacing: 0,
-                                color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: Dimensions.height15),
-          Container(
-            padding: EdgeInsets.zero,
-            height: (Dimensions.height200 * 6 + Dimensions.height100) -
-                Dimensions.height10 / 5,
-            child: GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                childAspectRatio: 1 / 1.18,
-                padding: EdgeInsets.only(
-                    left: Dimensions.width15,
-                    right: Dimensions.width15,
-                    top: 0,
-                    bottom: 0),
-                crossAxisCount: 2,
-                crossAxisSpacing: Dimensions.width15,
-                mainAxisSpacing: Dimensions.width15,
-                children: categoryProductController.bagsList.map((data) {
-                  return GestureDetector(
-                    onTap: () {
-                      Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          right: BorderSide(
-                              color: AppColors.productGridBorderColor,
-                              width: 2,
-                              style: BorderStyle.solid),
-                          top: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          bottom: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          left: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          //Product Image
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width10,
-                                vertical: Dimensions.height10),
-                            child: Image.network(
-                              data.mainPictureUrl!,
-                              height: Dimensions.width20 * 6,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          //Product Name
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Text(
-                              data.title!.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: Dimensions.font14,
-                                color: AppColors.productNameColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          //Product Price
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: AppColors.productPriceColor,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  'SOLD: ${setTotalSold(data)}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList()),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildProductGridBag(
+  //     HomeController homeController) {
+  //   return Container(
+  //     width: double.maxFinite,
+  //     color: Colors.white,
+  //     padding: EdgeInsets.only(
+  //         top: Dimensions.height10,
+  //         bottom: 0,
+  //         left: Dimensions.width10 / 2,
+  //         right: Dimensions.width10 / 2),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           width: double.maxFinite,
+  //           padding: EdgeInsets.zero,
+  //           child: Padding(
+  //             padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Text(
+  //                   'BAGS'.toUpperCase(),
+  //                   style: TextStyle(
+  //                     fontWeight: FontWeight.w500,
+  //                     fontSize: Dimensions.font18,
+  //                   ),
+  //                 ),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           Get.toNamed(RouteHelper.getCategoryProductPage(
+  //                               "Bag", "", "", "bags"));
+  //                         },
+  //                         style: ButtonStyle(
+  //                             padding: MaterialStateProperty.all<EdgeInsets>(
+  //                                 EdgeInsets.symmetric(
+  //                                     horizontal: Dimensions.width15,
+  //                                     vertical: Dimensions.height10 / 2)),
+  //                             foregroundColor: MaterialStateProperty.all<Color>(
+  //                                 Colors.white),
+  //                             backgroundColor: MaterialStateProperty.all<Color>(
+  //                                 AppColors.primaryColor),
+  //                             shape: MaterialStateProperty.all<
+  //                                 RoundedRectangleBorder>(
+  //                               RoundedRectangleBorder(
+  //                                 borderRadius: BorderRadius.circular(
+  //                                     Dimensions.radius15 / 3),
+  //                                 //side: BorderSide(color: Colors.red)
+  //                               ),
+  //                             )),
+  //                         child: Text(
+  //                           'View More',
+  //                           style: TextStyle(
+  //                               fontSize: Dimensions.font12,
+  //                               letterSpacing: 0,
+  //                               color: Colors.white),
+  //                           textAlign: TextAlign.center,
+  //                         )),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(height: Dimensions.height15),
+  //         Container(
+  //           padding: EdgeInsets.zero,
+  //           height: (Dimensions.height200 * 6 + Dimensions.height100) -
+  //               Dimensions.height10 / 5,
+  //           child: GridView.count(
+  //               physics: const NeverScrollableScrollPhysics(),
+  //               scrollDirection: Axis.vertical,
+  //               childAspectRatio: 1 / 1.18,
+  //               padding: EdgeInsets.only(
+  //                   left: Dimensions.width15,
+  //                   right: Dimensions.width15,
+  //                   top: 0,
+  //                   bottom: 0),
+  //               crossAxisCount: 2,
+  //               crossAxisSpacing: Dimensions.width15,
+  //               mainAxisSpacing: Dimensions.width15,
+  //               children: homeController.bag.map((data) {
+  //                 return GestureDetector(
+  //                   onTap: () {
+  //                     Get.toNamed(RouteHelper.getSingleProductPage(data.itemId!));
+  //                   },
+  //                   child: Container(
+  //                     decoration: const BoxDecoration(
+  //                       color: Colors.white,
+  //                       border: Border(
+  //                         right: BorderSide(
+  //                             color: AppColors.productGridBorderColor,
+  //                             width: 2,
+  //                             style: BorderStyle.solid),
+  //                         top: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         bottom: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         left: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: <Widget>[
+  //                         //Product Image
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width10,
+  //                               vertical: Dimensions.height10),
+  //                           child: Image.network(
+  //                             data.mainPictureUrl!,
+  //                             height: Dimensions.width20 * 6,
+  //                             width: double.infinity,
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                         ),
+  //                         //Product Name
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width15,
+  //                               vertical: Dimensions.height10 / 2),
+  //                           child: Text(
+  //                             data.title!.toUpperCase(),
+  //                             textAlign: TextAlign.center,
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style: TextStyle(
+  //                               fontSize: Dimensions.font14,
+  //                               color: AppColors.productNameColor,
+  //                               fontWeight: FontWeight.w500,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         //Product Price
+  //                         // Padding(
+  //                         //   padding: EdgeInsets.symmetric(
+  //                         //       horizontal: Dimensions.width15,
+  //                         //       vertical: Dimensions.height10 / 2),
+  //                         //   child: Row(
+  //                         //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         //     children: [
+  //                         //       Text(
+  //                         //         '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: AppColors.productPriceColor,
+  //                         //             fontWeight: FontWeight.w700),
+  //                         //       ),
+  //                         //       Text(
+  //                         //         'SOLD: ${setTotalSold(data)}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: Colors.grey),
+  //                         //       ),
+  //                         //     ],
+  //                         //   ),
+  //                         // ),
+                        
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 );
+  //               }).toList()),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildProductGridJewelry(
-      CategoryProductController categoryProductController) {
-    return Container(
-      width: double.maxFinite,
-      color: Colors.white,
-      padding: EdgeInsets.only(
-          top: Dimensions.height10,
-          bottom: 0,
-          left: Dimensions.width10 / 2,
-          right: Dimensions.width10 / 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.zero,
-            width: double.maxFinite,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'JEWELRY'.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: Dimensions.font18,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Get.toNamed(RouteHelper.getCategoryProductPage(
-                                "Jewelry", "", "", "jewelry"));
-                          },
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      horizontal: Dimensions.width15,
-                                      vertical: Dimensions.height10 / 2)),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  AppColors.primaryColor),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.radius15 / 3),
-                                  //side: BorderSide(color: Colors.red)
-                                ),
-                              )),
-                          child: Text(
-                            'View More',
-                            style: TextStyle(
-                                fontSize: Dimensions.font12,
-                                letterSpacing: 0,
-                                color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: Dimensions.height15),
-          Container(
-            padding: EdgeInsets.zero,
-            height: (Dimensions.height200 * 6 + Dimensions.height100) -
-                Dimensions.height10 / 5,
-            child: GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                childAspectRatio: 1 / 1.18,
-                padding: EdgeInsets.only(
-                    left: Dimensions.width15,
-                    right: Dimensions.width15,
-                    top: 0,
-                    bottom: 0),
-                crossAxisCount: 2,
-                crossAxisSpacing: Dimensions.width15,
-                mainAxisSpacing: Dimensions.width15,
-                children: categoryProductController.jewelryList.map((data) {
-                  return GestureDetector(
-                    onTap: () {
-                      Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          right: BorderSide(
-                              color: AppColors.productGridBorderColor,
-                              width: 2,
-                              style: BorderStyle.solid),
-                          top: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          bottom: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          left: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          //Product Image
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width10,
-                                vertical: Dimensions.height10),
-                            child: Image.network(
-                              data.mainPictureUrl!,
-                              height: Dimensions.width20 * 6,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          //Product Name
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Text(
-                              data.title!.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: Dimensions.font14,
-                                color: AppColors.productNameColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          //Product Price
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: AppColors.productPriceColor,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  'SOLD: ${setTotalSold(data)}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList()),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildProductGridJewelry(
+  //     HomeController homeController) {
+  //   return Container(
+  //     width: double.maxFinite,
+  //     color: Colors.white,
+  //     padding: EdgeInsets.only(
+  //         top: Dimensions.height10,
+  //         bottom: 0,
+  //         left: Dimensions.width10 / 2,
+  //         right: Dimensions.width10 / 2),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           padding: EdgeInsets.zero,
+  //           width: double.maxFinite,
+  //           child: Padding(
+  //             padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Text(
+  //                   'JEWELRY'.toUpperCase(),
+  //                   style: TextStyle(
+  //                     fontWeight: FontWeight.w500,
+  //                     fontSize: Dimensions.font18,
+  //                   ),
+  //                 ),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           Get.toNamed(RouteHelper.getCategoryProductPage(
+  //                               "Jewelry", "", "", "jewelry"));
+  //                         },
+  //                         style: ButtonStyle(
+  //                             padding: MaterialStateProperty.all<EdgeInsets>(
+  //                                 EdgeInsets.symmetric(
+  //                                     horizontal: Dimensions.width15,
+  //                                     vertical: Dimensions.height10 / 2)),
+  //                             foregroundColor: MaterialStateProperty.all<Color>(
+  //                                 Colors.white),
+  //                             backgroundColor: MaterialStateProperty.all<Color>(
+  //                                 AppColors.primaryColor),
+  //                             shape: MaterialStateProperty.all<
+  //                                 RoundedRectangleBorder>(
+  //                               RoundedRectangleBorder(
+  //                                 borderRadius: BorderRadius.circular(
+  //                                     Dimensions.radius15 / 3),
+  //                                 //side: BorderSide(color: Colors.red)
+  //                               ),
+  //                             )),
+  //                         child: Text(
+  //                           'View More',
+  //                           style: TextStyle(
+  //                               fontSize: Dimensions.font12,
+  //                               letterSpacing: 0,
+  //                               color: Colors.white),
+  //                           textAlign: TextAlign.center,
+  //                         )),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(height: Dimensions.height15),
+  //         Container(
+  //           padding: EdgeInsets.zero,
+  //           height: (Dimensions.height200 * 6 + Dimensions.height100) -
+  //               Dimensions.height10 / 5,
+  //           child: GridView.count(
+  //               physics: const NeverScrollableScrollPhysics(),
+  //               scrollDirection: Axis.vertical,
+  //               childAspectRatio: 1 / 1.18,
+  //               padding: EdgeInsets.only(
+  //                   left: Dimensions.width15,
+  //                   right: Dimensions.width15,
+  //                   top: 0,
+  //                   bottom: 0),
+  //               crossAxisCount: 2,
+  //               crossAxisSpacing: Dimensions.width15,
+  //               mainAxisSpacing: Dimensions.width15,
+  //               children: homeController.jewelry.map((data) {
+  //                 return GestureDetector(
+  //                   onTap: () {
+  //                     // Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
+  //                   },
+  //                   child: Container(
+  //                     decoration: const BoxDecoration(
+  //                       color: Colors.white,
+  //                       border: Border(
+  //                         right: BorderSide(
+  //                             color: AppColors.productGridBorderColor,
+  //                             width: 2,
+  //                             style: BorderStyle.solid),
+  //                         top: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         bottom: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         left: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: <Widget>[
+  //                         //Product Image
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width10,
+  //                               vertical: Dimensions.height10),
+  //                           child: Image.network(
+  //                             data.mainPictureUrl!,
+  //                             height: Dimensions.width20 * 6,
+  //                             width: double.infinity,
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                         ),
+  //                         //Product Name
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width15,
+  //                               vertical: Dimensions.height10 / 2),
+  //                           child: Text(
+  //                             data.title!.toUpperCase(),
+  //                             textAlign: TextAlign.center,
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style: TextStyle(
+  //                               fontSize: Dimensions.font14,
+  //                               color: AppColors.productNameColor,
+  //                               fontWeight: FontWeight.w500,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         //Product Price
+  //                         // Padding(
+  //                         //   padding: EdgeInsets.symmetric(
+  //                         //       horizontal: Dimensions.width15,
+  //                         //       vertical: Dimensions.height10 / 2),
+  //                         //   child: Row(
+  //                         //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         //     children: [
+  //                         //       Text(
+  //                         //         '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: AppColors.productPriceColor,
+  //                         //             fontWeight: FontWeight.w700),
+  //                         //       ),
+  //                         //       Text(
+  //                         //         'SOLD: ${setTotalSold(data)}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: Colors.grey),
+  //                         //       ),
+  //                         //     ],
+  //                         //   ),
+  //                         // ),
+                        
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 );
+  //               }).toList()),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildProductGridWatch(
-      CategoryProductController categoryProductController) {
-    return Container(
-      width: double.maxFinite,
-      color: Colors.white,
-      padding: EdgeInsets.only(
-          top: Dimensions.height10,
-          bottom: 0,
-          left: Dimensions.width10 / 2,
-          right: Dimensions.width10 / 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.zero,
-            width: double.maxFinite,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'WATCH'.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: Dimensions.font18,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Get.toNamed(RouteHelper.getCategoryProductPage(
-                                "Watch", "", "", "watches"));
-                          },
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      horizontal: Dimensions.width15,
-                                      vertical: Dimensions.height10 / 2)),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  AppColors.primaryColor),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.radius15 / 3),
-                                  //side: BorderSide(color: Colors.red)
-                                ),
-                              )),
-                          child: Text(
-                            'View More',
-                            style: TextStyle(
-                                fontSize: Dimensions.font12,
-                                letterSpacing: 0,
-                                color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: Dimensions.height15),
-          Container(
-            padding: EdgeInsets.zero,
-            height: (Dimensions.height200 * 6 + Dimensions.height100) -
-                Dimensions.height10 / 5,
-            child: GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                childAspectRatio: 1 / 1.18,
-                padding: EdgeInsets.only(
-                    left: Dimensions.width15,
-                    right: Dimensions.width15,
-                    top: 0,
-                    bottom: 0),
-                crossAxisCount: 2,
-                crossAxisSpacing: Dimensions.width15,
-                mainAxisSpacing: Dimensions.width15,
-                children: categoryProductController.watchList.map((data) {
-                  return GestureDetector(
-                    onTap: () {
-                      Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          right: BorderSide(
-                              color: AppColors.productGridBorderColor,
-                              width: 2,
-                              style: BorderStyle.solid),
-                          top: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          bottom: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          left: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          //Product Image
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width10,
-                                vertical: Dimensions.height10),
-                            child: Image.network(
-                              data.mainPictureUrl!,
-                              height: Dimensions.width20 * 6,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          //Product Name
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Text(
-                              data.title!.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: Dimensions.font14,
-                                color: AppColors.productNameColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          //Product Price
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: AppColors.productPriceColor,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  'SOLD: ${setTotalSold(data)}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList()),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildProductGridWatch(
+  //     HomeController homeController) {
+  //   return Container(
+  //     width: double.maxFinite,
+  //     color: Colors.white,
+  //     padding: EdgeInsets.only(
+  //         top: Dimensions.height10,
+  //         bottom: 0,
+  //         left: Dimensions.width10 / 2,
+  //         right: Dimensions.width10 / 2),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           padding: EdgeInsets.zero,
+  //           width: double.maxFinite,
+  //           child: Padding(
+  //             padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Text(
+  //                   'WATCH'.toUpperCase(),
+  //                   style: TextStyle(
+  //                     fontWeight: FontWeight.w500,
+  //                     fontSize: Dimensions.font18,
+  //                   ),
+  //                 ),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           Get.toNamed(RouteHelper.getCategoryProductPage(
+  //                               "Watch", "", "", "watches"));
+  //                         },
+  //                         style: ButtonStyle(
+  //                             padding: MaterialStateProperty.all<EdgeInsets>(
+  //                                 EdgeInsets.symmetric(
+  //                                     horizontal: Dimensions.width15,
+  //                                     vertical: Dimensions.height10 / 2)),
+  //                             foregroundColor: MaterialStateProperty.all<Color>(
+  //                                 Colors.white),
+  //                             backgroundColor: MaterialStateProperty.all<Color>(
+  //                                 AppColors.primaryColor),
+  //                             shape: MaterialStateProperty.all<
+  //                                 RoundedRectangleBorder>(
+  //                               RoundedRectangleBorder(
+  //                                 borderRadius: BorderRadius.circular(
+  //                                     Dimensions.radius15 / 3),
+  //                                 //side: BorderSide(color: Colors.red)
+  //                               ),
+  //                             )),
+  //                         child: Text(
+  //                           'View More',
+  //                           style: TextStyle(
+  //                               fontSize: Dimensions.font12,
+  //                               letterSpacing: 0,
+  //                               color: Colors.white),
+  //                           textAlign: TextAlign.center,
+  //                         )),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(height: Dimensions.height15),
+  //         Container(
+  //           padding: EdgeInsets.zero,
+  //           height: (Dimensions.height200 * 6 + Dimensions.height100) -
+  //               Dimensions.height10 / 5,
+  //           child: GridView.count(
+  //               physics: const NeverScrollableScrollPhysics(),
+  //               scrollDirection: Axis.vertical,
+  //               childAspectRatio: 1 / 1.18,
+  //               padding: EdgeInsets.only(
+  //                   left: Dimensions.width15,
+  //                   right: Dimensions.width15,
+  //                   top: 0,
+  //                   bottom: 0),
+  //               crossAxisCount: 2,
+  //               crossAxisSpacing: Dimensions.width15,
+  //               mainAxisSpacing: Dimensions.width15,
+  //               children: homeController.watch.map((data) {
+  //                 return GestureDetector(
+  //                   onTap: () {
+  //                     // Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
+  //                   },
+  //                   child: Container(
+  //                     decoration: const BoxDecoration(
+  //                       color: Colors.white,
+  //                       border: Border(
+  //                         right: BorderSide(
+  //                             color: AppColors.productGridBorderColor,
+  //                             width: 2,
+  //                             style: BorderStyle.solid),
+  //                         top: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         bottom: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         left: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: <Widget>[
+  //                         //Product Image
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width10,
+  //                               vertical: Dimensions.height10),
+  //                           child: Image.network(
+  //                             data.mainPictureUrl!,
+  //                             height: Dimensions.width20 * 6,
+  //                             width: double.infinity,
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                         ),
+  //                         //Product Name
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width15,
+  //                               vertical: Dimensions.height10 / 2),
+  //                           child: Text(
+  //                             data.title!.toUpperCase(),
+  //                             textAlign: TextAlign.center,
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style: TextStyle(
+  //                               fontSize: Dimensions.font14,
+  //                               color: AppColors.productNameColor,
+  //                               fontWeight: FontWeight.w500,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         //Product Price
+  //                         // Padding(
+  //                         //   padding: EdgeInsets.symmetric(
+  //                         //       horizontal: Dimensions.width15,
+  //                         //       vertical: Dimensions.height10 / 2),
+  //                         //   child: Row(
+  //                         //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         //     children: [
+  //                         //       Text(
+  //                         //         '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: AppColors.productPriceColor,
+  //                         //             fontWeight: FontWeight.w700),
+  //                         //       ),
+  //                         //       Text(
+  //                         //         'SOLD: ${setTotalSold(data)}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: Colors.grey),
+  //                         //       ),
+  //                         //     ],
+  //                         //   ),
+  //                         // ),
+                       
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 );
+  //               }).toList()),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildProductGridBaby(
-      CategoryProductController categoryProductController) {
-    return Container(
-      width: double.maxFinite,
-      color: Colors.white,
-      padding: EdgeInsets.only(
-          top: Dimensions.height10,
-          bottom: 0,
-          left: Dimensions.width10 / 2,
-          right: Dimensions.width10 / 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.zero,
-            width: double.maxFinite,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Baby items'.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: Dimensions.font18,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Get.toNamed(RouteHelper.getCategoryProductPage(
-                                "Baby Items", "", "", "baby-items"));
-                          },
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      horizontal: Dimensions.width15,
-                                      vertical: Dimensions.height10 / 2)),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  AppColors.primaryColor),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.radius15 / 3),
-                                  //side: BorderSide(color: Colors.red)
-                                ),
-                              )),
-                          child: Text(
-                            'View More',
-                            style: TextStyle(
-                                fontSize: Dimensions.font12,
-                                letterSpacing: 0,
-                                color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: Dimensions.height15),
-          Container(
-            padding: EdgeInsets.zero,
-            height: (Dimensions.height200 * 6 + Dimensions.height100) -
-                Dimensions.height10 / 5,
-            child: GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                childAspectRatio: 1 / 1.18,
-                padding: EdgeInsets.only(
-                    left: Dimensions.width15,
-                    right: Dimensions.width15,
-                    top: 0,
-                    bottom: 0),
-                crossAxisCount: 2,
-                crossAxisSpacing: Dimensions.width15,
-                mainAxisSpacing: Dimensions.width15,
-                children: categoryProductController.babyList.map((data) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (kDebugMode) {
-                        print("Baby Product ID : ${data.id!}");
-                      }
-                      Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          right: BorderSide(
-                              color: AppColors.productGridBorderColor,
-                              width: 2,
-                              style: BorderStyle.solid),
-                          top: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          bottom: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                          left: BorderSide(
-                            color: AppColors.productGridBorderColor,
-                            width: 1.0,
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          //Product Image
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width10,
-                                vertical: Dimensions.height10),
-                            child: Image.network(
-                              data.mainPictureUrl!,
-                              height: Dimensions.width20 * 6,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          //Product Name
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Text(
-                              data.title!.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: Dimensions.font14,
-                                color: AppColors.productNameColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          //Product Price
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height10 / 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: AppColors.productPriceColor,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  'SOLD: ${setTotalSold(data)}',
-                                  textAlign: TextAlign.end,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: Dimensions.font12,
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList()),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildProductGridBaby(
+  //     HomeController homeController) {
+  //   return Container(
+  //     width: double.maxFinite,
+  //     color: Colors.white,
+  //     padding: EdgeInsets.only(
+  //         top: Dimensions.height10,
+  //         bottom: 0,
+  //         left: Dimensions.width10 / 2,
+  //         right: Dimensions.width10 / 2),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           padding: EdgeInsets.zero,
+  //           width: double.maxFinite,
+  //           child: Padding(
+  //             padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Text(
+  //                   'Baby items'.toUpperCase(),
+  //                   style: TextStyle(
+  //                     fontWeight: FontWeight.w500,
+  //                     fontSize: Dimensions.font18,
+  //                   ),
+  //                 ),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     TextButton(
+  //                         onPressed: () {
+  //                           Get.toNamed(RouteHelper.getCategoryProductPage(
+  //                               "Baby Items", "", "", "baby-items"));
+  //                         },
+  //                         style: ButtonStyle(
+  //                             padding: MaterialStateProperty.all<EdgeInsets>(
+  //                                 EdgeInsets.symmetric(
+  //                                     horizontal: Dimensions.width15,
+  //                                     vertical: Dimensions.height10 / 2)),
+  //                             foregroundColor: MaterialStateProperty.all<Color>(
+  //                                 Colors.white),
+  //                             backgroundColor: MaterialStateProperty.all<Color>(
+  //                                 AppColors.primaryColor),
+  //                             shape: MaterialStateProperty.all<
+  //                                 RoundedRectangleBorder>(
+  //                               RoundedRectangleBorder(
+  //                                 borderRadius: BorderRadius.circular(
+  //                                     Dimensions.radius15 / 3),
+  //                                 //side: BorderSide(color: Colors.red)
+  //                               ),
+  //                             )),
+  //                         child: Text(
+  //                           'View More',
+  //                           style: TextStyle(
+  //                               fontSize: Dimensions.font12,
+  //                               letterSpacing: 0,
+  //                               color: Colors.white),
+  //                           textAlign: TextAlign.center,
+  //                         )),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(height: Dimensions.height15),
+  //         Container(
+  //           padding: EdgeInsets.zero,
+  //           height: (Dimensions.height200 * 6 + Dimensions.height100) -
+  //               Dimensions.height10 / 5,
+  //           child: GridView.count(
+  //               physics: const NeverScrollableScrollPhysics(),
+  //               scrollDirection: Axis.vertical,
+  //               childAspectRatio: 1 / 1.18,
+  //               padding: EdgeInsets.only(
+  //                   left: Dimensions.width15,
+  //                   right: Dimensions.width15,
+  //                   top: 0,
+  //                   bottom: 0),
+  //               crossAxisCount: 2,
+  //               crossAxisSpacing: Dimensions.width15,
+  //               mainAxisSpacing: Dimensions.width15,
+  //               children: homeController.baby.map((data) {
+  //                 return GestureDetector(
+  //                   onTap: () {
+  //                     if (kDebugMode) {
+  //                       print("Baby Product ID : ${data.id!}");
+  //                     }
+  //                     // Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
+  //                   },
+  //                   child: Container(
+  //                     decoration: const BoxDecoration(
+  //                       color: Colors.white,
+  //                       border: Border(
+  //                         right: BorderSide(
+  //                             color: AppColors.productGridBorderColor,
+  //                             width: 2,
+  //                             style: BorderStyle.solid),
+  //                         top: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         bottom: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                         left: BorderSide(
+  //                           color: AppColors.productGridBorderColor,
+  //                           width: 1.0,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: <Widget>[
+  //                         //Product Image
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width10,
+  //                               vertical: Dimensions.height10),
+  //                           child: Image.network(
+  //                             data.mainPictureUrl!,
+  //                             height: Dimensions.width20 * 6,
+  //                             width: double.infinity,
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                         ),
+  //                         //Product Name
+  //                         Padding(
+  //                           padding: EdgeInsets.symmetric(
+  //                               horizontal: Dimensions.width15,
+  //                               vertical: Dimensions.height10 / 2),
+  //                           child: Text(
+  //                             data.title!.toUpperCase(),
+  //                             textAlign: TextAlign.center,
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style: TextStyle(
+  //                               fontSize: Dimensions.font14,
+  //                               color: AppColors.productNameColor,
+  //                               fontWeight: FontWeight.w500,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         //Product Price
+  //                         // Padding(
+  //                         //   padding: EdgeInsets.symmetric(
+  //                         //       horizontal: Dimensions.width15,
+  //                         //       vertical: Dimensions.height10 / 2),
+  //                         //   child: Row(
+  //                         //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         //     children: [
+  //                         //       Text(
+  //                         //         '৳ ${data.quantityRanges != null ? (data.quantityRanges![0].price!.originalPrice * priceFactor).round() : (data.price?.originalPrice * priceFactor).round()}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: AppColors.productPriceColor,
+  //                         //             fontWeight: FontWeight.w700),
+  //                         //       ),
+  //                         //       Text(
+  //                         //         'SOLD: ${setTotalSold(data)}',
+  //                         //         textAlign: TextAlign.end,
+  //                         //         overflow: TextOverflow.ellipsis,
+  //                         //         style: TextStyle(
+  //                         //             fontSize: Dimensions.font12,
+  //                         //             color: Colors.grey),
+  //                         //       ),
+  //                         //     ],
+  //                         //   ),
+  //                         // ),
+                        
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 );
+  //               }).toList()),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
 }
 
 //Grid Item

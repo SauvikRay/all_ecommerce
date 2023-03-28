@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:core';
+import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -135,51 +136,51 @@ class HomeController extends GetxController implements GetxService{
       if (kDebugMode) {
         //print("RecentProduct : ${_recentProductModel.toJson().toString()}");
       }
-
+  
       //Shoes
-      /*_shoes = [];
+      _shoes = [];
       var resultShoe = response.body["shoes"];
       List<TopCategoryProductModel> shoes  = (resultShoe as List<dynamic>).map((dynamic el) => TopCategoryProductModel.fromJson(el as Map<String, dynamic>)).toList();
       _shoes.addAll(shoes);
       if (kDebugMode) {
         //print("Shoes : ${_shoes.toString()}");
-      }*/
+      }
 
       //Bag
-      /*_bag = [];
+     _bag = [];
       var resultBag = response.body["bag"];
       List<TopCategoryProductModel> bag  = (resultBag as List<dynamic>).map((dynamic el) => TopCategoryProductModel.fromJson(el as Map<String, dynamic>)).toList();
       _bag.addAll(bag);
       if (kDebugMode) {
         //print("Bags : ${_bag.toString()}");
-      }*/
+      }
 
       //Jewelry
-      /*_jewelry = [];
+      _jewelry = [];
       var resultJewelry = response.body["jewelry"];
       List<TopCategoryProductModel> jewelry  = (resultJewelry as List<dynamic>).map((dynamic el) => TopCategoryProductModel.fromJson(el as Map<String, dynamic>)).toList();
       _jewelry.addAll(jewelry);
       if (kDebugMode) {
        print("Jewelry : ${_jewelry.toString()}");
-      }*/
+      }
 
       //Baby
-      /*_baby = [];
+      _baby = [];
       var resultBaby= response.body["baby"];
       List<TopCategoryProductModel> baby  = (resultBaby as List<dynamic>).map((dynamic el) => TopCategoryProductModel.fromJson(el as Map<String, dynamic>)).toList();
       _baby.addAll(baby);
       if (kDebugMode) {
         print("Baby : ${_baby.toString()}");
-      }*/
+      }
 
       //Watch
-      /*_watch = [];
+      _watch = [];
       var resultWatch= response.body["watch"];
       List<TopCategoryProductModel> watch  = (resultWatch as List<dynamic>).map((dynamic el) => TopCategoryProductModel.fromJson(el as Map<String, dynamic>)).toList();
       _watch.addAll(watch);
       if (kDebugMode) {
         print("Watch : ${_watch.toString()}");
-      }*/
+      }
 
       _isLoaded = true;
       update();
@@ -224,5 +225,6 @@ class HomeController extends GetxController implements GetxService{
 
     update();
   }
+
 
 }
