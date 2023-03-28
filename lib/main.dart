@@ -1,11 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:skybuybd/all_model_and_repository/product/product_provider.dart';
+import 'package:skybuybd/helper/dependencies.dart' as dep;
 import 'package:skybuybd/route/route_helper.dart';
 import 'package:skybuybd/utils/constants.dart';
-import 'package:skybuybd/helper/dependencies.dart' as dep;
 
 import 'provider/cart_provider.dart';
 import 'provider/category_provider.dart';
@@ -28,6 +28,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<CategoryProvider>(
           create: (context) => CategoryProvider(),
+        ),
+        ChangeNotifierProvider<ProductProvider>(
+          create: (context) => ProductProvider(),
         )
       ],
       child: GetMaterialApp(

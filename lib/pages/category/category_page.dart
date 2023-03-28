@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:skybuybd/controller/category_controller.dart';
+
 import '../../provider/category_provider.dart';
 import '../../route/route_helper.dart';
 import '../../utils/dimentions.dart';
+import '../product/category_product.dart';
 
 ///Sub Category Page
 class CategoryPage extends StatefulWidget {
@@ -410,16 +413,15 @@ class _CategoryPageState extends State<CategoryPage> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    // PersistentNavBarNavigator.pushNewScreen(
-                    //         context,
-                    //         screen: CategoryProduct(
-                    //             parentCatName: subCategoryList[index].name,
-                    //             parentCatSlug: subCategoryList[index].slug!),
-                    //         withNavBar:
-                    //             true,
-                    //         pageTransitionAnimation:
-                    //             PageTransitionAnimation.cupertino,
-                    //       );
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: CategoryProduct(
+                        childCatSlug: subCategoryList[index].slug!,
+                      ),
+                      withNavBar: true,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
                   },
                   child: Container(
                     color: Colors.grey[200],

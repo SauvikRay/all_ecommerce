@@ -1,17 +1,16 @@
 // To parse this JSON data, do
 //
-//     final newSubCategoryModel = newSubCategoryModelFromJson(jsonString);
+//     final productModel = productModelFromJson(jsonString);
 
 import 'dart:convert';
 
-NewSubCategoryModel newSubCategoryModelFromJson(String str) =>
-    NewSubCategoryModel.fromJson(json.decode(str));
+ProductModel productModelFromJson(String str) =>
+    ProductModel.fromJson(json.decode(str));
 
-String newSubCategoryModelToJson(NewSubCategoryModel data) =>
-    json.encode(data.toJson());
+String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
-class NewSubCategoryModel {
-  NewSubCategoryModel({
+class ProductModel {
+  ProductModel({
     this.categoryList,
     this.child,
     this.products,
@@ -21,15 +20,14 @@ class NewSubCategoryModel {
   int? child;
   Products? products;
 
-  factory NewSubCategoryModel.fromJson(Map<String, dynamic> json) =>
-      NewSubCategoryModel(
+  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         categoryList: json["categoryList"] == null
             ? null
             : CategoryList.fromJson(json["categoryList"]),
         child: json["child"],
-        // products: json["products"] == null
-        //     ? null
-        //     : Products.fromJson(json["products"]),
+        products: json["products"] == null
+            ? null
+            : Products.fromJson(json["products"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -75,24 +73,24 @@ class CategoryList {
   String? keyword;
   String? slug;
   String? description;
-  ParentId? parentId;
-  String? icon;
-  String? picture;
+  String? parentId;
+  dynamic icon;
+  dynamic picture;
   String? otcId;
-  ProviderType? providerType;
-  int? isHidden;
-  int? isVirtual;
-  int? isParent;
-  int? isInternal;
-  String? externalId;
-  String? metaData;
+  dynamic providerType;
+  dynamic isHidden;
+  dynamic isVirtual;
+  dynamic isParent;
+  dynamic isInternal;
+  dynamic externalId;
+  dynamic metaData;
   dynamic iconImageUrl;
-  DateTime? isTop;
+  dynamic isTop;
   int? userId;
   DateTime? createdAt;
   DateTime? updatedAt;
   dynamic deletedAt;
-  List<CategoryList>? children;
+  List<dynamic>? children;
 
   factory CategoryList.fromJson(Map<String, dynamic> json) => CategoryList(
         id: json["id"],
@@ -102,11 +100,11 @@ class CategoryList {
         keyword: json["keyword"],
         slug: json["slug"],
         description: json["description"],
-        parentId: parentIdValues.map[json["ParentId"]],
+        parentId: json["ParentId"],
         icon: json["icon"],
         picture: json["picture"],
         otcId: json["otc_id"],
-        providerType: providerTypeValues.map[json["ProviderType"]],
+        providerType: json["ProviderType"],
         isHidden: json["IsHidden"],
         isVirtual: json["IsVirtual"],
         isParent: json["IsParent"],
@@ -114,7 +112,7 @@ class CategoryList {
         externalId: json["ExternalId"],
         metaData: json["MetaData"],
         iconImageUrl: json["IconImageUrl"],
-        isTop: json["is_top"] == null ? null : DateTime.parse(json["is_top"]),
+        isTop: json["is_top"],
         userId: json["user_id"],
         createdAt: json["created_at"] == null
             ? null
@@ -125,8 +123,7 @@ class CategoryList {
         deletedAt: json["deleted_at"],
         children: json["children"] == null
             ? []
-            : List<CategoryList>.from(
-                json["children"]!.map((x) => CategoryList.fromJson(x))),
+            : List<dynamic>.from(json["children"]!.map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
@@ -137,11 +134,11 @@ class CategoryList {
         "keyword": keyword,
         "slug": slug,
         "description": description,
-        "ParentId": parentIdValues.reverse[parentId],
+        "ParentId": parentId,
         "icon": icon,
         "picture": picture,
         "otc_id": otcId,
-        "ProviderType": providerTypeValues.reverse[providerType],
+        "ProviderType": providerType,
         "IsHidden": isHidden,
         "IsVirtual": isVirtual,
         "IsParent": isParent,
@@ -149,25 +146,15 @@ class CategoryList {
         "ExternalId": externalId,
         "MetaData": metaData,
         "IconImageUrl": iconImageUrl,
-        "is_top": isTop?.toIso8601String(),
+        "is_top": isTop,
         "user_id": userId,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
         "deleted_at": deletedAt,
-        "children": children == null
-            ? []
-            : List<dynamic>.from(children!.map((x) => x.toJson())),
+        "children":
+            children == null ? [] : List<dynamic>.from(children!.map((x) => x)),
       };
 }
-
-enum ParentId { WOMEN_CLOTHING }
-
-final parentIdValues = EnumValues({"women-clothing": ParentId.WOMEN_CLOTHING});
-
-enum ProviderType { ALIBABA1688 }
-
-final providerTypeValues =
-    EnumValues({"Alibaba1688": ProviderType.ALIBABA1688});
 
 class Products {
   Products({
@@ -235,13 +222,11 @@ class Products {
 
 class Datum {
   Datum({
-    this.quantityRanges,
     this.id,
     this.errorCode,
     this.hasError,
     this.providerType,
     this.updatedTime,
-    this.createdTime,
     this.title,
     this.isTitleManuallyTranslated,
     this.originalTitle,
@@ -259,29 +244,31 @@ class Datum {
     this.price,
     this.masterQuantity,
     this.pictures,
-    // this.location,
+    this.location,
     this.featuredValues,
     this.isSellAllowed,
-    // this.physicalParameters,
+    this.physicalParameters,
     this.isFiltered,
-    this.promotionPrice,
+    this.quantityRanges,
+    this.createdTime,
+    this.brandId,
+    this.brandName,
+    this.features,
   });
 
-  List<QuantityRange>? quantityRanges;
   String? id;
   ErrorCode? errorCode;
   bool? hasError;
   ProviderType? providerType;
   DateTime? updatedTime;
-  DateTime? createdTime;
   String? title;
   bool? isTitleManuallyTranslated;
   String? originalTitle;
   CategoryId? categoryId;
   String? externalCategoryId;
-  VendorId? vendorId;
-  VendorName? vendorName;
-  VendorName? vendorDisplayName;
+  String? vendorId;
+  String? vendorName;
+  String? vendorDisplayName;
   int? vendorScore;
   String? taobaoItemUrl;
   String? externalItemUrl;
@@ -291,18 +278,18 @@ class Datum {
   Price? price;
   int? masterQuantity;
   List<Picture>? pictures;
-  // Location? location;
+  Location? location;
   List<FeaturedValue>? featuredValues;
   bool? isSellAllowed;
-  // PhysicalParameters? physicalParameters;
+  dynamic physicalParameters;
   bool? isFiltered;
-  PromotionPrice? promotionPrice;
+  List<QuantityRange>? quantityRanges;
+  DateTime? createdTime;
+  String? brandId;
+  String? brandName;
+  List<String>? features;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        quantityRanges: json["QuantityRanges"] == null
-            ? []
-            : List<QuantityRange>.from(
-                json["QuantityRanges"]!.map((x) => QuantityRange.fromJson(x))),
         id: json["Id"],
         errorCode: errorCodeValues.map[json["ErrorCode"]]!,
         hasError: json["HasError"],
@@ -310,22 +297,19 @@ class Datum {
         updatedTime: json["UpdatedTime"] == null
             ? null
             : DateTime.parse(json["UpdatedTime"]),
-        createdTime: json["CreatedTime"] == null
-            ? null
-            : DateTime.parse(json["CreatedTime"]),
         title: json["Title"],
         isTitleManuallyTranslated: json["IsTitleManuallyTranslated"],
         originalTitle: json["OriginalTitle"],
         categoryId: categoryIdValues.map[json["CategoryId"]],
         externalCategoryId: json["ExternalCategoryId"],
-        vendorId: vendorIdValues.map[json["VendorId"]],
-        vendorName: vendorNameValues.map[json["VendorName"]],
-        vendorDisplayName: vendorNameValues.map[json["VendorDisplayName"]],
+        vendorId: json["VendorId"],
+        vendorName: json["VendorName"],
+        vendorDisplayName: json["VendorDisplayName"],
         vendorScore: json["VendorScore"],
         taobaoItemUrl: json["TaobaoItemUrl"],
         externalItemUrl: json["ExternalItemUrl"],
         mainPictureUrl: json["MainPictureUrl"],
-        stuffStatus: stuffStatusValues.map[json["StuffStatus"]],
+        stuffStatus: stuffStatusValues.map[json["StuffStatus"]]!,
         volume: json["Volume"],
         price: json["Price"] == null ? null : Price.fromJson(json["Price"]),
         masterQuantity: json["MasterQuantity"],
@@ -341,33 +325,36 @@ class Datum {
             : List<FeaturedValue>.from(
                 json["FeaturedValues"]!.map((x) => FeaturedValue.fromJson(x))),
         isSellAllowed: json["IsSellAllowed"],
-        // physicalParameters: json["PhysicalParameters"] == null
-        //     ? null
-        //     : PhysicalParameters.fromJson(json["PhysicalParameters"]),
+        physicalParameters: json["PhysicalParameters"],
         isFiltered: json["IsFiltered"],
-        promotionPrice: json["PromotionPrice"] == null
+        quantityRanges: json["QuantityRanges"] == null
+            ? []
+            : List<QuantityRange>.from(
+                json["QuantityRanges"]!.map((x) => QuantityRange.fromJson(x))),
+        createdTime: json["CreatedTime"] == null
             ? null
-            : PromotionPrice.fromJson(json["PromotionPrice"]),
+            : DateTime.parse(json["CreatedTime"]),
+        brandId: json["BrandId"],
+        brandName: json["BrandName"],
+        features: json["Features"] == null
+            ? []
+            : List<String>.from(json["Features"]!.map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
-        "QuantityRanges": quantityRanges == null
-            ? []
-            : List<dynamic>.from(quantityRanges!.map((x) => x.toJson())),
         "Id": id,
         "ErrorCode": errorCodeValues.reverse[errorCode],
         "HasError": hasError,
         "ProviderType": providerTypeValues.reverse[providerType],
         "UpdatedTime": updatedTime?.toIso8601String(),
-        "CreatedTime": createdTime?.toIso8601String(),
         "Title": title,
         "IsTitleManuallyTranslated": isTitleManuallyTranslated,
         "OriginalTitle": originalTitle,
         "CategoryId": categoryIdValues.reverse[categoryId],
         "ExternalCategoryId": externalCategoryId,
-        "VendorId": vendorIdValues.reverse[vendorId],
-        "VendorName": vendorNameValues.reverse[vendorName],
-        "VendorDisplayName": vendorNameValues.reverse[vendorDisplayName],
+        "VendorId": vendorId,
+        "VendorName": vendorName,
+        "VendorDisplayName": vendorDisplayName,
         "VendorScore": vendorScore,
         "TaobaoItemUrl": taobaoItemUrl,
         "ExternalItemUrl": externalItemUrl,
@@ -379,20 +366,39 @@ class Datum {
         "Pictures": pictures == null
             ? []
             : List<dynamic>.from(pictures!.map((x) => x.toJson())),
-        // "Location": location?.toJson(),
+        "Location": location?.toJson(),
         "FeaturedValues": featuredValues == null
             ? []
             : List<dynamic>.from(featuredValues!.map((x) => x.toJson())),
         "IsSellAllowed": isSellAllowed,
-        // "PhysicalParameters": physicalParameters?.toJson(),
+        "PhysicalParameters": physicalParameters,
         "IsFiltered": isFiltered,
-        "PromotionPrice": promotionPrice?.toJson(),
+        "QuantityRanges": quantityRanges == null
+            ? []
+            : List<dynamic>.from(quantityRanges!.map((x) => x.toJson())),
+        "CreatedTime": createdTime?.toIso8601String(),
+        "BrandId": brandId,
+        "BrandName": brandName,
+        "Features":
+            features == null ? [] : List<dynamic>.from(features!.map((x) => x)),
       };
 }
 
-enum CategoryId { OTC_33175 }
+enum CategoryId {
+  ABB_123622002,
+  ABB_121880003,
+  ABB_201829215,
+  ABB_126484005,
+  ABB_125388001
+}
 
-final categoryIdValues = EnumValues({"otc-33175": CategoryId.OTC_33175});
+final categoryIdValues = EnumValues({
+  "abb-121880003": CategoryId.ABB_121880003,
+  "abb-123622002": CategoryId.ABB_123622002,
+  "abb-125388001": CategoryId.ABB_125388001,
+  "abb-126484005": CategoryId.ABB_126484005,
+  "abb-201829215": CategoryId.ABB_201829215
+});
 
 enum ErrorCode { OK }
 
@@ -420,17 +426,16 @@ class FeaturedValue {
 
 enum Name {
   UNIT,
+  IS_SKU_OFFER,
   SALES_IN_LAST30_DAYS,
   TOTAL_SALES,
-  USER_ID,
-  SALE_NUM,
-  NORMALIZED_RATING,
-  IS_SKU_OFFER,
-  NET_WEIGHT,
-  RATING,
   DESCRIPTION_TOKEN,
-  RATES_COUNT,
-  PAY_ORDER30_DAY
+  SALE_NUM,
+  USER_ID,
+  PAY_ORDER30_DAY,
+  NORMALIZED_RATING,
+  NET_WEIGHT,
+  RATING
 }
 
 final nameValues = EnumValues({
@@ -439,7 +444,6 @@ final nameValues = EnumValues({
   "netWeight": Name.NET_WEIGHT,
   "normalizedRating": Name.NORMALIZED_RATING,
   "payOrder30Day": Name.PAY_ORDER30_DAY,
-  "RatesCount": Name.RATES_COUNT,
   "rating": Name.RATING,
   "SalesInLast30Days": Name.SALES_IN_LAST30_DAYS,
   "saleNum": Name.SALE_NUM,
@@ -454,55 +458,45 @@ class Location {
     this.state,
   });
 
-  City? city;
-  State? state;
+  String? city;
+  String? state;
 
   factory Location.fromJson(Map<String, dynamic> json) => Location(
-        city: cityValues.map[json["City"]],
-        state: stateValues.map[json["State"]],
+        city: json["City"],
+        state: json["State"],
       );
 
   Map<String, dynamic> toJson() => {
-        "City": cityValues.reverse[city],
-        "State": stateValues.reverse[state],
+        "City": city,
+        "State": state,
       };
 }
 
-enum City { GUANGZHOU_CITY, HUIZHOU }
-
-final cityValues = EnumValues(
-    {"Guangzhou City": City.GUANGZHOU_CITY, "Huizhou": City.HUIZHOU});
-
-enum State { GUANGDONG_PROVINCE }
-
-final stateValues =
-    EnumValues({"Guangdong Province": State.GUANGDONG_PROVINCE});
-
-class PhysicalParameters {
-  PhysicalParameters({
+class PhysicalParametersClass {
+  PhysicalParametersClass({
     this.weight,
-    this.length,
     this.width,
+    this.length,
     this.height,
   });
 
   double? weight;
-  int? length;
   double? width;
-  double? height;
+  int? length;
+  int? height;
 
-  factory PhysicalParameters.fromJson(Map<String, dynamic> json) =>
-      PhysicalParameters(
+  factory PhysicalParametersClass.fromJson(Map<String, dynamic> json) =>
+      PhysicalParametersClass(
         weight: json["Weight"]?.toDouble(),
-        length: json["Length"],
         width: json["Width"]?.toDouble(),
-        height: json["Height"]?.toDouble(),
+        length: json["Length"],
+        height: json["Height"],
       );
 
   Map<String, dynamic> toJson() => {
         "Weight": weight,
-        "Length": length,
         "Width": width,
+        "Length": length,
         "Height": height,
       };
 }
@@ -580,8 +574,8 @@ class Price {
     this.oneItemPriceWithoutDelivery,
   });
 
-  double? originalPrice;
-  double? marginPrice;
+  dynamic originalPrice;
+  dynamic marginPrice;
   CurrencyName? originalCurrencyCode;
   ConvertedPriceList? convertedPriceList;
   String? convertedPrice;
@@ -589,14 +583,14 @@ class Price {
   Sign? currencySign;
   CurrencyName? currencyName;
   bool? isDeliverable;
-  PromotionPrice? deliveryPrice;
-  PromotionPrice? oneItemDeliveryPrice;
-  PromotionPrice? priceWithoutDelivery;
-  PromotionPrice? oneItemPriceWithoutDelivery;
+  DeliveryPrice? deliveryPrice;
+  DeliveryPrice? oneItemDeliveryPrice;
+  DeliveryPrice? priceWithoutDelivery;
+  DeliveryPrice? oneItemPriceWithoutDelivery;
 
   factory Price.fromJson(Map<String, dynamic> json) => Price(
-        originalPrice: json["OriginalPrice"]?.toDouble(),
-        marginPrice: json["MarginPrice"]?.toDouble(),
+        originalPrice: json["OriginalPrice"],
+        marginPrice: json["MarginPrice"],
         originalCurrencyCode:
             currencyNameValues.map[json["OriginalCurrencyCode"]]!,
         convertedPriceList: json["ConvertedPriceList"] == null
@@ -609,16 +603,16 @@ class Price {
         isDeliverable: json["IsDeliverable"],
         deliveryPrice: json["DeliveryPrice"] == null
             ? null
-            : PromotionPrice.fromJson(json["DeliveryPrice"]),
+            : DeliveryPrice.fromJson(json["DeliveryPrice"]),
         oneItemDeliveryPrice: json["OneItemDeliveryPrice"] == null
             ? null
-            : PromotionPrice.fromJson(json["OneItemDeliveryPrice"]),
+            : DeliveryPrice.fromJson(json["OneItemDeliveryPrice"]),
         priceWithoutDelivery: json["PriceWithoutDelivery"] == null
             ? null
-            : PromotionPrice.fromJson(json["PriceWithoutDelivery"]),
+            : DeliveryPrice.fromJson(json["PriceWithoutDelivery"]),
         oneItemPriceWithoutDelivery: json["OneItemPriceWithoutDelivery"] == null
             ? null
-            : PromotionPrice.fromJson(json["OneItemPriceWithoutDelivery"]),
+            : DeliveryPrice.fromJson(json["OneItemPriceWithoutDelivery"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -674,12 +668,12 @@ class Internal {
     this.code,
   });
 
-  double? price;
+  dynamic price;
   Sign? sign;
   CurrencyName? code;
 
   factory Internal.fromJson(Map<String, dynamic> json) => Internal(
-        price: json["Price"]?.toDouble(),
+        price: json["Price"],
         sign: signValues.map[json["Sign"]]!,
         code: currencyNameValues.map[json["Code"]]!,
       );
@@ -699,22 +693,22 @@ enum Sign { EMPTY }
 
 final signValues = EnumValues({"元": Sign.EMPTY});
 
-class PromotionPrice {
-  PromotionPrice({
+class DeliveryPrice {
+  DeliveryPrice({
     this.originalPrice,
     this.marginPrice,
     this.originalCurrencyCode,
     this.convertedPriceList,
   });
 
-  double? originalPrice;
-  double? marginPrice;
+  dynamic originalPrice;
+  dynamic marginPrice;
   CurrencyName? originalCurrencyCode;
   ConvertedPriceList? convertedPriceList;
 
-  factory PromotionPrice.fromJson(Map<String, dynamic> json) => PromotionPrice(
-        originalPrice: json["OriginalPrice"]?.toDouble(),
-        marginPrice: json["MarginPrice"]?.toDouble(),
+  factory DeliveryPrice.fromJson(Map<String, dynamic> json) => DeliveryPrice(
+        originalPrice: json["OriginalPrice"],
+        marginPrice: json["MarginPrice"],
         originalCurrencyCode:
             currencyNameValues.map[json["OriginalCurrencyCode"]]!,
         convertedPriceList: json["ConvertedPriceList"] == null
@@ -730,6 +724,11 @@ class PromotionPrice {
         "ConvertedPriceList": convertedPriceList?.toJson(),
       };
 }
+
+enum ProviderType { ALIBABA1688 }
+
+final providerTypeValues =
+    EnumValues({"Alibaba1688": ProviderType.ALIBABA1688});
 
 class QuantityRange {
   QuantityRange({
@@ -754,26 +753,6 @@ class QuantityRange {
 enum StuffStatus { NEW }
 
 final stuffStatusValues = EnumValues({"New": StuffStatus.NEW});
-
-enum VendorName { EMPTY, THE_919714919, THE_88 }
-
-final vendorNameValues = EnumValues({
-  "广州市澳莉歌服饰有限公司": VendorName.EMPTY,
-  "韩依专柜88": VendorName.THE_88,
-  "琴琴919714919": VendorName.THE_919714919
-});
-
-enum VendorId {
-  ABB_B2_B_2206907896656_CD9_AB,
-  ABB_B2_B_2424310836,
-  ABB_B2_B_2468675661
-}
-
-final vendorIdValues = EnumValues({
-  "abb-b2b-2206907896656cd9ab": VendorId.ABB_B2_B_2206907896656_CD9_AB,
-  "abb-b2b-2424310836": VendorId.ABB_B2_B_2424310836,
-  "abb-b2b-2468675661": VendorId.ABB_B2_B_2468675661
-});
 
 class EnumValues<T> {
   Map<String, T> map;

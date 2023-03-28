@@ -8,14 +8,15 @@ import 'package:skybuybd/common_widgets/appbar.dart';
 import 'package:skybuybd/controller/auth_controller.dart';
 
 import '../../base/show_custom_snakebar.dart';
-import '../home/home_page.dart';
-import '../home/widgets/dimond_bottom_bar.dart';
+import '../../common_widgets/appbar.dart';
 import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/dimentions.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/big_text.dart';
+import '../home/home_page.dart';
+import '../home/widgets/dimond_bottom_bar.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-        appBar: CustomAppbar(),
+      appBar: CustomAppbar(),
       body: GetBuilder<AuthController>(builder: (authController) {
         return !authController.isLoading
             ? _buildBody(width, authController)
@@ -740,21 +741,19 @@ class _LoginState extends State<Login> {
     } else {
       authController.login(email, pass).then((status) {
         if (status.isSuccess) {
-
-            Navigator.pushAndRemoveUntil(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    HomePage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return child;
-                },
-              ),
-              // ModalRoute.withName(RouteHelper.getInitial()
-              ((route) => false
-              ),
-            );
+          Navigator.pushAndRemoveUntil(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomePage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return child;
+              },
+            ),
+            // ModalRoute.withName(RouteHelper.getInitial()
+            ((route) => false),
+          );
           // Get.toNamed(RouteHelper.getAccountPage());
         } else {
           showCustomSnakebar(status.message);

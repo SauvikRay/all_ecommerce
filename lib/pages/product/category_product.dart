@@ -1,14 +1,14 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
+import '../../all_model_and_repository/product/product_provider.dart';
 import '../../base/show_custom_snakebar.dart';
-import '../../controller/auth_controller.dart';
-import '../../controller/category_product_controller.dart';
-import '../../controller/home_controller.dart';
 import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
@@ -40,6 +40,7 @@ class _CategoryProductState extends State<CategoryProduct> {
   int selectedIndexBottom = -1;
 
   double priceFactor = 1.0;
+  late ProductProvider productProvider;
 
   //Image picker
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
@@ -115,22 +116,27 @@ class _CategoryProductState extends State<CategoryProduct> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        if (Get.find<HomeController>()
-            .getSharedPref()
-            .containsKey(Constants.CONVERSION_RATE)) {
-          priceFactor = Get.find<HomeController>()
-              .getSharedPref()
-              .getDouble(Constants.CONVERSION_RATE)!;
-        } else {
-          priceFactor = 20.0;
-        }
-      });
-    });
-    isUserLoggedIn = Get.find<AuthController>().isUserLoggedIn();
-    Get.find<CategoryProductController>()
-        .getCategoryProductList(widget.childCatSlug);
+
+    productProvider = Provider.of<ProductProvider>(context, listen: false);
+    log(widget.childCatSlug);
+    productProvider.getProductList(widget.childCatSlug);
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {
+    //     if (Get.find<HomeController>()
+    //         .getSharedPref()
+    //         .containsKey(Constants.CONVERSION_RATE)) {
+    //       priceFactor = Get.find<HomeController>()
+    //           .getSharedPref()
+    //           .getDouble(Constants.CONVERSION_RATE)!;
+    //     } else {
+    //       priceFactor = 20.0;
+    //     }
+    //   });
+    // });
+    // isUserLoggedIn = Get.find<AuthController>().isUserLoggedIn();
+    // Get.find<CategoryProductController>()
+    //     .getCategoryProductList(widget.childCatSlug);
   }
 
   // @override
@@ -158,7 +164,7 @@ class _CategoryProductState extends State<CategoryProduct> {
         ),
       ),
       bottom: PreferredSize(
-          preferredSize: Size.fromHeight(40),
+          preferredSize: const Size.fromHeight(40),
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: Dimensions.width10, vertical: Dimensions.height10),
@@ -330,19 +336,9 @@ class _CategoryProductState extends State<CategoryProduct> {
     return WillPopScope(
       child: SafeArea(
         child: Scaffold(
-            // backgroundColor: AppColors.pageBg,
-            // appBar: _buildAppBar(textFieldFocusNode, controller),
-            // body: GetBuilder<CategoryProductController>(
-            //     builder: (catProdController) {
-            //   return catProdController.isLoaded
-            //       ? _buildBody(catProdController)
-            //       : const Center(
-            //           child: CircularProgressIndicator(
-            //               color: AppColors.primaryColor),
-            //         );
-            // }),
-            // bottomNavigationBar: _buildDiamondBottomNavigation(),
-            ),
+          backgroundColor: AppColors.pageBg,
+          body: _buildBody(),
+        ),
       ),
       onWillPop: () async {
         Navigator.pop(context);
@@ -407,160 +403,171 @@ class _CategoryProductState extends State<CategoryProduct> {
     });
   }
 
-  // Widget _buildBody(CategoryProductController catProdController) {
-  //   return Container(
-  //     child: SingleChildScrollView(
-  //       child: Column(
-  //         children: [
-  //           Container(
-  //             height: 60,
-  //             color: Colors.white,
-  //             padding: EdgeInsets.all(16),
-  //             margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.start,
-  //               children: [
-  //                 const Text(
-  //                   'Home',
-  //                   style: TextStyle(fontSize: 14, color: Colors.black),
-  //                 ),
-  //                 const Icon(
-  //                   Icons.arrow_forward_ios,
-  //                   size: 16,
-  //                   color: Colors.black,
-  //                 ),
-  //                 Text(
-  //                   widget.parentCatName ?? '',
-  //                   style: TextStyle(
-  //                       fontSize: 13, color: Colors.black.withOpacity(0.8)),
-  //                 ),
-  //                 const Icon(
-  //                   Icons.arrow_forward_ios,
-  //                   size: 16,
-  //                   color: Colors.black,
-  //                 ),
-  //                 Text(
-  //                   widget.subCatName ?? '',
-  //                   style: TextStyle(
-  //                       fontSize: 13, color: Colors.black.withOpacity(0.8)),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           Container(
-  //             color: Colors.white,
-  //             padding: EdgeInsets.all(16),
-  //             margin: EdgeInsets.all(16),
-  //             child: Container(
-  //               child: _buildProductGrid(catProdController.categoryProductList),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _buildBody() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // Container(
+          //   height: 60,
+          //   color: Colors.white,
+          //   padding: EdgeInsets.all(16),
+          //   margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.start,
+          //     children: [
+          //       const Text(
+          //         'Home',
+          //         style: TextStyle(fontSize: 14, color: Colors.black),
+          //       ),
+          //       const Icon(
+          //         Icons.arrow_forward_ios,
+          //         size: 16,
+          //         color: Colors.black,
+          //       ),
+          //       Text(
+          //         widget.parentCatName ?? '',
+          //         style: TextStyle(
+          //             fontSize: 13, color: Colors.black.withOpacity(0.8)),
+          //       ),
+          //       const Icon(
+          //         Icons.arrow_forward_ios,
+          //         size: 16,
+          //         color: Colors.black,
+          //       ),
+          //       Text(
+          //         widget.subCatName ?? '',
+          //         style: TextStyle(
+          //             fontSize: 13, color: Colors.black.withOpacity(0.8)),
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
-  // Widget _buildProductGrid(List<CategoryProductModel> prodList) {
-  //   return Container(
-  //     width: double.maxFinite,
-  //     color: Colors.white,
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.start,
-  //       children: [
-  //         Container(
-  //           height: 1260,
-  //           child: GridView.count(
-  //               physics: const NeverScrollableScrollPhysics(),
-  //               scrollDirection: Axis.vertical,
-  //               childAspectRatio: 1 / 1.3,
-  //               padding:
-  //                   const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-  //               crossAxisCount: 2,
-  //               crossAxisSpacing: 0,
-  //               mainAxisSpacing: 0,
-  //               children: prodList.map((data) {
-  //                 return GestureDetector(
-  //                   onTap: () {
-  //                     Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
-  //                   },
-  //                   child: Container(
-  //                     decoration: const BoxDecoration(
-  //                       border: Border(
-  //                         right: BorderSide(
-  //                           color: AppColors.borderColor,
-  //                           width: 1.0,
-  //                         ),
-  //                         top: BorderSide(
-  //                           color: AppColors.borderColor,
-  //                           width: 1.0,
-  //                         ),
-  //                         left: BorderSide(
-  //                           color: AppColors.borderColor,
-  //                           width: 1.0,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     child: Column(
-  //                       mainAxisAlignment: MainAxisAlignment.start,
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: <Widget>[
-  //                         Padding(
-  //                           padding: const EdgeInsets.all(10.0),
-  //                           child: Image.network(
-  //                             data.mainPictureUrl!,
-  //                             height: 120,
-  //                             width: double.infinity,
-  //                             fit: BoxFit.cover,
-  //                           ),
-  //                         ),
-  //                         Padding(
-  //                           padding: const EdgeInsets.symmetric(
-  //                               horizontal: 16, vertical: 5),
-  //                           child: Text(
-  //                             data.title!,
-  //                             textAlign: TextAlign.end,
-  //                             overflow: TextOverflow.ellipsis,
-  //                             style: const TextStyle(
-  //                               fontSize: 12,
-  //                               color: Colors.black,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         Padding(
-  //                           padding: const EdgeInsets.symmetric(
-  //                               horizontal: 16, vertical: 5),
-  //                           child: Row(
-  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                             children: [
-  //                               Text(
-  //                                 '৳ ${(data.price?.originalPrice * priceFactor).round()}',
-  //                                 textAlign: TextAlign.end,
-  //                                 overflow: TextOverflow.ellipsis,
-  //                                 style: const TextStyle(
-  //                                     fontSize: 12,
-  //                                     color: Colors.black,
-  //                                     fontWeight: FontWeight.bold),
-  //                               ),
-  //                               Text(
-  //                                 'SOLD: 3242',
-  //                                 textAlign: TextAlign.end,
-  //                                 overflow: TextOverflow.ellipsis,
-  //                                 style: const TextStyle(
-  //                                     fontSize: 12, color: Colors.grey),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 );
-  //               }).toList()),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
+            child: Container(
+              child: _buildProductGrid(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductGrid() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height - 260,
+      child: Consumer<ProductProvider>(
+        builder: (context, provider, child) {
+          List productList = provider.productList!;
+          if (productList.isNotEmpty) {
+            return GridView.builder(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
+              itemCount: provider.productList!.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Get.toNamed(RouteHelper.getSingleProductPage(
+                        productList[index].id));
+                  },
+                  child: Card(
+                    elevation: 3,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          right: BorderSide(
+                            color: AppColors.borderColor,
+                            width: 1.0,
+                          ),
+                          top: BorderSide(
+                            color: AppColors.borderColor,
+                            width: 1.0,
+                          ),
+                          left: BorderSide(
+                            color: AppColors.borderColor,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Image.network(
+                              productList[index].mainPictureUrl!,
+                              height: 60,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 5),
+                            child: Text(
+                              productList[index].title!,
+                              textAlign: TextAlign.end,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '৳ ${(productList[index].price?.originalPrice * priceFactor).round()}',
+                                  textAlign: TextAlign.end,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const Text(
+                                  'SOLD: 3242',
+                                  textAlign: TextAlign.end,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 40,
+                  width: 40,
+                  child: const CircularProgressIndicator(),
+                ),
+              ],
+            );
+          }
+        },
+      ),
+    );
+  }
 }
