@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:skybuybd/utils/app_colors.dart';
 import 'package:skybuybd/utils/dimentions.dart';
 
@@ -10,7 +11,6 @@ import '../../../models/drawer/cdms.dart';
 import '../../../route/route_helper.dart';
 import '../../../utils/constants.dart';
 import 'Txt.dart';
-import 'package:get/get.dart';
 
 class ComplexDrawer1 extends StatefulWidget {
   const ComplexDrawer1({Key? key}) : super(key: key);
@@ -20,12 +20,11 @@ class ComplexDrawer1 extends StatefulWidget {
 }
 
 class _ComplexDrawerState extends State<ComplexDrawer1> {
-
   int selectedIndex = -1; //Don't set it to 0
   bool isExpanded = true;
 
   static List<CDM> cdms = [
-    CDM("assets/cat/shoes.png", "Shoes", "shoes",[  ]),
+    CDM("assets/cat/shoes.png", "Shoes", "shoes", []),
   ];
 
   Future<void> _loadResources() async {
@@ -41,14 +40,17 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return GetBuilder<CategoryController>(builder: (categoryController){
-      return  categoryController.isLoaded ? Drawer(
-        child: Container(
-          width: width,
-          color: Colors.transparent,
-          child: row(categoryController),
-        ),
-      ) : const Center(child: CircularProgressIndicator(color: AppColors.primaryColor));
+    return GetBuilder<CategoryController>(builder: (categoryController) {
+      return categoryController.isLoaded
+          ? Drawer(
+              child: Container(
+                width: width,
+                color: Colors.transparent,
+                child: row(categoryController),
+              ),
+            )
+          : const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor));
     });
   }
 
@@ -75,18 +77,21 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
                 bool selected = selectedIndex == index;
                 return ExpansionTile(
                     onExpansionChanged: (z) {
-                      if(z == true){
+                      if (z == true) {
                         //check here cdms is null @if null check new one
-                        print("Otc id : "+cdm.otc_id);
-
-                        Get.find<CategoryController>().getSubcategoryByOtc(cdm.otc_id).then((response) {
-                          if(response.isSuccess){
-                            if(response.message == "child"){
+                        print("Otc id : " + cdm.otc_id);
+                        EasyLoading.show();
+                        Get.find<CategoryController>()
+                            .getSubcategoryByOtc(cdm.otc_id)
+                            .then((response) {
+                          EasyLoading.dismiss();
+                          if (response.isSuccess) {
+                            if (response.message == "child") {
                               print("Drawer :: Going to child category page");
-                            }else if(response.message == "product"){
+                            } else if (response.message == "product") {
                               print("Drawer :: Going to product page");
                             }
-                          }else{
+                          } else {
                             print("Drawer :: something Else");
                           }
                         });
@@ -107,8 +112,10 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
                       imageUrl: "${Constants.BASE_URL}/${cdm.img}",
                       height: Dimensions.height30,
                       width: Dimensions.width30,
-                      placeholder: (context, url) => const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                     title: Txt(
                       text: cdm.title,
@@ -119,12 +126,14 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
                     trailing: cdm.submenus.isEmpty
                         ? null
                         : Icon(
-                      selected ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                      //color: Colors.white,
-                      color: Colors.black,
-                    ),
+                            selected
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down,
+                            //color: Colors.white,
+                            color: Colors.black,
+                          ),
                     children: cdm.submenus.map((subMenu) {
-                      return sMenuButton(subMenu, false,cdm.title);
+                      return sMenuButton(subMenu, false, cdm.title);
                     }).toList());
               },
             ),
@@ -163,13 +172,16 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
     );
   }
 
-  Widget subMenuWidget(List<CDMS> submenus, bool isValidSubMenu, String parent) {
+  Widget subMenuWidget(
+      List<CDMS> submenus, bool isValidSubMenu, String parent) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
       height: isValidSubMenu ? submenus.length.toDouble() * 37.5 : 45,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: isValidSubMenu ? AppColors.complexDrawerBlueGrey : Colors.transparent,
+          color: isValidSubMenu
+              ? AppColors.complexDrawerBlueGrey
+              : Colors.transparent,
           borderRadius: const BorderRadius.only(
             topRight: Radius.circular(8),
             bottomRight: Radius.circular(8),
@@ -180,7 +192,7 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
           itemBuilder: (context, index) {
             String subMenu = submenus[index].title;
             CDMS sMenu = submenus[index];
-            return sMenuButton(sMenu, index == 0,parent);
+            return sMenuButton(sMenu, index == 0, parent);
           }),
     );
   }
@@ -191,16 +203,20 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
         //handle the function
         //if index==0? donothing: doyourlogic here
         print('tapping submenu : ${subMenu.otc_id}');
-        Get.find<CategoryController>().getSubCategoryList(subMenu.otc_id).then((response) {
-          if(response.isSuccess){
-            if(response.message == "child"){
+        Get.find<CategoryController>()
+            .getSubCategoryList(subMenu.otc_id)
+            .then((response) {
+          if (response.isSuccess) {
+            if (response.message == "child") {
               print("Drawer :: Going to child category page");
-              Get.toNamed(RouteHelper.getChildCategoryPage(parent, subMenu.title, subMenu.otc_id));
-            }else if(response.message == "product"){
+              Get.toNamed(RouteHelper.getChildCategoryPage(
+                  parent, subMenu.title, subMenu.otc_id));
+            } else if (response.message == "product") {
               print("Drawer :: Going to product page");
-              Get.toNamed(RouteHelper.getCategoryProductPage(parent, subMenu.title, "", subMenu.otc_id));
+              Get.toNamed(RouteHelper.getCategoryProductPage(
+                  parent, subMenu.title, "", subMenu.otc_id));
             }
-          }else{
+          } else {
             print("Drawer :: something Else");
           }
         });
@@ -208,8 +224,8 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
       child: Container(
         alignment: Alignment.topLeft,
         padding: EdgeInsets.only(
-          left: Dimensions.width8*2,
-          right: Dimensions.width8*3,
+          left: Dimensions.width8 * 2,
+          right: Dimensions.width8 * 3,
           top: Dimensions.height8,
           bottom: Dimensions.width8,
         ),
@@ -237,5 +253,4 @@ class _ComplexDrawerState extends State<ComplexDrawer1> {
       ),
     );
   }
-
 }

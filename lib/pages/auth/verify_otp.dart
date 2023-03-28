@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:skybuybd/pages/home/home_page.dart';
 
 import '../../base/custom_loader.dart';
 import '../../base/show_custom_snakebar.dart';
 import '../../controller/auth_controller.dart';
+import '../account/account_page.dart';
 import '../home/widgets/dimond_bottom_bar.dart';
 import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
@@ -18,14 +20,13 @@ import '../../widgets/big_text.dart';
 
 class VerifyOtp extends StatefulWidget {
   final String phone;
-  const VerifyOtp({Key? key,required this.phone}) : super(key: key);
+  const VerifyOtp({Key? key, required this.phone}) : super(key: key);
 
   @override
   State<VerifyOtp> createState() => _VerifyOtpState();
 }
 
 class _VerifyOtpState extends State<VerifyOtp> {
-
   int selectedIndex = -1;
 
   late bool isUserLoggedIn;
@@ -33,7 +34,6 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   @override
   Widget build(BuildContext context) {
-
     isUserLoggedIn = Get.find<AuthController>().isUserLoggedIn();
     double width = MediaQuery.of(context).size.width;
 
@@ -41,21 +41,39 @@ class _VerifyOtpState extends State<VerifyOtp> {
       String phone = widget.phone;
 
       if (otp.isEmpty) {
-        showCustomSnakebar(
-            'Type your otp',
-            title: "OTP"
-        );
+        showCustomSnakebar('Type your otp', title: "OTP");
       } else if (otp.length != 4) {
-        showCustomSnakebar(
-            'Type valid otp',
-            title: "Invalid OTP"
-        );
+        showCustomSnakebar('Type valid otp', title: "Invalid OTP");
       } else {
-        authController.verifyOtp(phone,otp).then((status) {
+        authController.verifyOtp(phone, otp).then((status) {
           if (status.isSuccess) {
             print(status.toString());
-            showCustomSnakebar(status.message,title: "Login",color: AppColors.primaryColor);
-            Get.toNamed(RouteHelper.getAccountPage());
+            showCustomSnakebar(status.message,
+                title: "Login", color: AppColors.primaryColor);
+
+            // Get.toNamed(RouteHelper.getAccountPage());
+            // Navigator.of(context).pushReplacement(
+            //   PageRouteBuilder(
+            //     pageBuilder: (context, animation, secondaryAnimation) =>
+            //         HomePage(),
+            //     transitionsBuilder:
+            //         (context, animation, secondaryAnimation, child) {
+            //       return child;
+            //     },
+            //   ),
+            // );
+            Navigator.pushAndRemoveUntil(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    HomePage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return child;
+                },
+              ),
+              ModalRoute.withName(RouteHelper.getInitial()),
+            );
           } else {
             showCustomSnakebar(status.message);
           }
@@ -66,110 +84,101 @@ class _VerifyOtpState extends State<VerifyOtp> {
     return Scaffold(
       appBar: _buildAppBar(),
       body: GetBuilder<AuthController>(builder: (authController) {
-        return !authController.isLoading ? Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Verify Your phone number',
-              style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                  color: Colors.black87,
-                  letterSpacing: 1
-              ),
-
-            ),
-            SizedBox(height: 15),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: const Text(
-                'We just sent you an SMS with an OTP code.\n To complete your phone number login, please enter the 4-digit OTP code below.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87
-                ),
-              ),
-            ),
-            SizedBox(height: 25),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    OTPTextField(
-                        controller: otpController,
-                        length: 4,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        textFieldAlignment: MainAxisAlignment.spaceAround,
-                        fieldWidth: 45,
-                        fieldStyle: FieldStyle.underline,
-                        outlineBorderRadius: 15,
-                        style: TextStyle(fontSize: 17),
-                        otpFieldStyle: OtpFieldStyle(
-                            borderColor: AppColors.primaryColor,
-                            backgroundColor: Colors.transparent,
-                            focusBorderColor: AppColors.primaryColor,
-                            disabledBorderColor: Colors.yellow,
-                            enabledBorderColor: AppColors.primaryColor,
-                            errorBorderColor: Colors.black
-                        ),
-                        onChanged: (pin) {
-                          print("Changed: " + pin);
-                        },
-                        onCompleted: (pin) {
-                          print("Completed: " + pin);
-                          if (pin.length == 4) {
-                            verifyOtp(authController, pin);
-                          }
-                        }
-                    ),
-                  ],
-                ),
-                SizedBox(height: 25),
-                Container(
-                  width: 180,
-                  child: TextButton(
-                      onPressed: () {
-
-                      },
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all<EdgeInsets>(
-                              EdgeInsets.symmetric(horizontal: 30, vertical: 10)),
-                          foregroundColor: MaterialStateProperty.all<Color>(
-                              Colors.white),
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              AppColors.primaryColor),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              //side: BorderSide(color: Colors.red)
-                            ),
-                          )
-                      ),
-                      child: Text(
-                        "Resend Code",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0
-                        ),
-                        textAlign: TextAlign.center,
-
-                      )
+        return !authController.isLoading
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Verify Your phone number',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                        color: Colors.black87,
+                        letterSpacing: 1),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ) : CustomLoader();
+                  SizedBox(height: 15),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    child: const Text(
+                      'We just sent you an SMS with an OTP code.\n To complete your phone number login, please enter the 4-digit OTP code below.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          OTPTextField(
+                              controller: otpController,
+                              length: 4,
+                              width: MediaQuery.of(context).size.width,
+                              textFieldAlignment: MainAxisAlignment.spaceAround,
+                              fieldWidth: 45,
+                              fieldStyle: FieldStyle.underline,
+                              outlineBorderRadius: 15,
+                              style: TextStyle(fontSize: 17),
+                              otpFieldStyle: OtpFieldStyle(
+                                  borderColor: AppColors.primaryColor,
+                                  backgroundColor: Colors.transparent,
+                                  focusBorderColor: AppColors.primaryColor,
+                                  disabledBorderColor: Colors.yellow,
+                                  enabledBorderColor: AppColors.primaryColor,
+                                  errorBorderColor: Colors.black),
+                              onChanged: (pin) {
+                                print("Changed: " + pin);
+                              },
+                              onCompleted: (pin) {
+                                print("Completed: " + pin);
+                                if (pin.length == 4) {
+                                  verifyOtp(authController, pin);
+                                }
+                              }),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Container(
+                        width: 180,
+                        child: TextButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.symmetric(
+                                        horizontal: 30, vertical: 10)),
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        AppColors.primaryColor),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    //side: BorderSide(color: Colors.red)
+                                  ),
+                                )),
+                            child: Text(
+                              "Resend Code",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                              textAlign: TextAlign.center,
+                            )),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            : CustomLoader();
       }),
       bottomNavigationBar: _buildBottomNavigation(selectedIndex),
     );
@@ -179,7 +188,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
     return AppBar(
       backgroundColor: AppColors.primaryColor,
       elevation: 0,
-      toolbarHeight: Dimensions.height10*10,
+      toolbarHeight: Dimensions.height10 * 10,
       centerTitle: false,
       automaticallyImplyLeading: false,
       title: GestureDetector(
@@ -196,9 +205,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
           preferredSize: Size.fromHeight(40),
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width10,
-                vertical: Dimensions.height10
-            ),
+                horizontal: Dimensions.width10, vertical: Dimensions.height10),
             child: SizedBox(
               height: 45,
               child: TextField(
@@ -207,7 +214,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                     borderRadius: BorderRadius.circular(Dimensions.radius8),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.all(Dimensions.radius20/2),
+                  contentPadding: EdgeInsets.all(Dimensions.radius20 / 2),
                   prefixIcon: const Icon(
                     Icons.camera_alt_outlined,
                     color: AppColors.btnColorBlueDark,
@@ -232,8 +239,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                 ),
               ),
             ),
-          )
-      ),
+          )),
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -260,8 +266,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
                     ),
                   ),
                   Positioned(
-                    right:8,
-                    top:5,
+                    right: 8,
+                    top: 5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -270,7 +276,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   )
                 ],
               ),
-              onTap: (){
+              onTap: () {
                 //Goto Wishlist
                 Get.toNamed(RouteHelper.getWishListPage());
               },
@@ -296,8 +302,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
                     ),
                   ),
                   Positioned(
-                    right:8,
-                    top:5,
+                    right: 8,
+                    top: 5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -306,9 +312,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   )
                 ],
               ),
-              onTap: (){
+              onTap: () {
                 //Goto Cart
-
               },
             ),
             IconButton(
@@ -322,7 +327,9 @@ class _VerifyOtpState extends State<VerifyOtp> {
               ),
               tooltip: 'Profile',
               onPressed: () {
-                isUserLoggedIn ? Get.toNamed(RouteHelper.getAccountPage()) : Get.toNamed(RouteHelper.getLoginPage());
+                isUserLoggedIn
+                    ? Get.toNamed(RouteHelper.getAccountPage())
+                    : Get.toNamed(RouteHelper.getLoginPage());
               },
             ),
           ],
@@ -331,7 +338,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
     );
   }
 
-  Widget _buildBottomNavigation(int selectedIndex){
+  Widget _buildBottomNavigation(int selectedIndex) {
     return DiamondBottomNavigation(
       itemIcons: const [
         CupertinoIcons.home,
@@ -339,9 +346,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
         CupertinoIcons.cart,
         CupertinoIcons.chat_bubble,
       ],
-      itemName: const [
-        'Home','Category','','Cart','Chat'
-      ],
+      itemName: const ['Home', 'Category', '', 'Cart', 'Chat'],
       centerIcon: Icons.place,
       selectedIndex: selectedIndex,
       onItemPressed: onPressed,
@@ -358,30 +363,30 @@ class _VerifyOtpState extends State<VerifyOtp> {
           selectedIndex = 0;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 1) {
+      } else if (index == 1) {
         setState(() {
           selectedIndex = 1;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 2) {
+      } else if (index == 2) {
         //Refresh home page
         setState(() {
           selectedIndex = 2;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 3) {
+      } else if (index == 3) {
         //Cart Page
         setState(() {
           selectedIndex = 3;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 4) {
+      } else if (index == 4) {
         //Chat Page
         setState(() {
           selectedIndex = 4;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else{
+      } else {
         setState(() {
           selectedIndex = index;
         });
@@ -389,6 +394,4 @@ class _VerifyOtpState extends State<VerifyOtp> {
       }
     });
   }
-
-
 }

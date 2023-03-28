@@ -7,13 +7,15 @@ import 'package:skybuybd/base/footer.dart';
 import 'package:skybuybd/controller/auth_controller.dart';
 
 import '../../base/show_custom_snakebar.dart';
-import '../home/widgets/dimond_bottom_bar.dart';
+import '../../common_widgets/appbar.dart';
 import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/constants.dart';
 import '../../utils/dimentions.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/big_text.dart';
+import '../home/home_page.dart';
+import '../home/widgets/dimond_bottom_bar.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -23,7 +25,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   late bool isUserLoggedIn;
 
   int selectedIndex = -1;
@@ -53,11 +54,13 @@ class _LoginState extends State<Login> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: _buildAppBar(),
-      body: GetBuilder<AuthController>(builder: (authController){
-        return !authController.isLoading ? _buildBody(width,authController) : const CustomLoader();
+      appBar: CustomAppbar(),
+      body: GetBuilder<AuthController>(builder: (authController) {
+        return !authController.isLoading
+            ? _buildBody(width, authController)
+            : const CustomLoader();
       }),
-      bottomNavigationBar: _buildBottomNavigation(selectedIndex),
+      // bottomNavigationBar: _buildBottomNavigation(selectedIndex),
     );
   }
 
@@ -65,7 +68,7 @@ class _LoginState extends State<Login> {
     return AppBar(
       backgroundColor: AppColors.primaryColor,
       elevation: 0,
-      toolbarHeight: Dimensions.height10*10,
+      toolbarHeight: Dimensions.height10 * 10,
       centerTitle: false,
       automaticallyImplyLeading: false,
       title: GestureDetector(
@@ -82,9 +85,7 @@ class _LoginState extends State<Login> {
           preferredSize: Size.fromHeight(40),
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width10,
-                vertical: Dimensions.height10
-            ),
+                horizontal: Dimensions.width10, vertical: Dimensions.height10),
             child: SizedBox(
               height: 45,
               child: TextField(
@@ -93,7 +94,7 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(Dimensions.radius8),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.all(Dimensions.radius20/2),
+                  contentPadding: EdgeInsets.all(Dimensions.radius20 / 2),
                   prefixIcon: const Icon(
                     Icons.camera_alt_outlined,
                     color: AppColors.btnColorBlueDark,
@@ -118,8 +119,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-          )
-      ),
+          )),
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -146,8 +146,8 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   Positioned(
-                    right:8,
-                    top:5,
+                    right: 8,
+                    top: 5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -156,7 +156,7 @@ class _LoginState extends State<Login> {
                   )
                 ],
               ),
-              onTap: (){
+              onTap: () {
                 //Goto Wishlist
                 Get.toNamed(RouteHelper.getWishListPage());
               },
@@ -182,8 +182,8 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   Positioned(
-                    right:8,
-                    top:5,
+                    right: 8,
+                    top: 5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -192,9 +192,8 @@ class _LoginState extends State<Login> {
                   )
                 ],
               ),
-              onTap: (){
+              onTap: () {
                 //Goto Cart
-
               },
             ),
             IconButton(
@@ -208,7 +207,9 @@ class _LoginState extends State<Login> {
               ),
               tooltip: 'Profile',
               onPressed: () {
-                isUserLoggedIn ? Get.toNamed(RouteHelper.getAccountPage()) : Get.toNamed(RouteHelper.getLoginPage());
+                isUserLoggedIn
+                    ? Get.toNamed(RouteHelper.getAccountPage())
+                    : Get.toNamed(RouteHelper.getLoginPage());
               },
             ),
           ],
@@ -217,7 +218,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _buildBottomNavigation(int selectedIndex){
+  Widget _buildBottomNavigation(int selectedIndex) {
     return DiamondBottomNavigation(
       itemIcons: const [
         CupertinoIcons.home,
@@ -225,9 +226,7 @@ class _LoginState extends State<Login> {
         CupertinoIcons.cart,
         CupertinoIcons.chat_bubble,
       ],
-      itemName: const [
-        'Home','Category','','Cart','Chat'
-      ],
+      itemName: const ['Home', 'Category', '', 'Cart', 'Chat'],
       centerIcon: Icons.place,
       selectedIndex: selectedIndex,
       onItemPressed: onPressed,
@@ -244,30 +243,30 @@ class _LoginState extends State<Login> {
           selectedIndex = 0;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 1) {
+      } else if (index == 1) {
         setState(() {
           selectedIndex = 1;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 2) {
+      } else if (index == 2) {
         //Refresh home page
         setState(() {
           selectedIndex = 2;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 3) {
+      } else if (index == 3) {
         //Cart Page
         setState(() {
           selectedIndex = 3;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else if (index == 4) {
+      } else if (index == 4) {
         //Chat Page
         setState(() {
           selectedIndex = 4;
         });
         Get.offNamed(RouteHelper.getInitial());
-      }else{
+      } else {
         setState(() {
           selectedIndex = index;
         });
@@ -276,22 +275,21 @@ class _LoginState extends State<Login> {
     });
   }
 
-  Widget _buildBody(double width,AuthController authController){
+  Widget _buildBody(double width, AuthController authController) {
     return Container(
       width: width,
-      height: isEmailSelected ? 520+740 : 500+740,
+      height: isEmailSelected ? 520 + 740 : 500 + 740,
       color: Colors.grey,
       child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Column(
           children: [
             Container(
               width: double.maxFinite,
               height: isEmailSelected ? 520 : 500,
-              padding: EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 0),
+              padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
               //margin: EdgeInsets.only(left: 20,right: 20,top: 20),
-              decoration: const BoxDecoration(
-                  color: Colors.white
-              ),
+              decoration: const BoxDecoration(color: Colors.white),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -301,8 +299,7 @@ class _LoginState extends State<Login> {
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 28,
-                          color: Colors.black
-                      ),
+                          color: Colors.black),
                     ),
                     SizedBox(height: 5),
                     RichText(
@@ -320,10 +317,8 @@ class _LoginState extends State<Login> {
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600
-                            ),
+                                fontWeight: FontWeight.w600),
                           ),
-
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -331,24 +326,21 @@ class _LoginState extends State<Login> {
                     SizedBox(height: 20),
                     Container(
                       height: 40,
-                      padding: EdgeInsets.only(top: 5,bottom: 5),
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(3),
                           border: Border.all(
                               color: AppColors.borderColor,
                               width: 0.0,
-                              style: BorderStyle.solid
-                          ),
+                              style: BorderStyle.solid),
                           boxShadow: [
                             BoxShadow(
                                 offset: Offset(0, 5),
                                 blurRadius: 5,
                                 spreadRadius: 2,
-                                color: AppColors.borderColor
-                            ),
-                          ]
-                      ),
+                                color: AppColors.borderColor),
+                          ]),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -363,8 +355,7 @@ class _LoginState extends State<Login> {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.btnColorBlueDark
-                            ),
+                                color: AppColors.btnColorBlueDark),
                           ),
                         ],
                       ),
@@ -375,16 +366,15 @@ class _LoginState extends State<Login> {
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 20,
-                          color: Colors.black
-                      ),
+                          color: Colors.black),
                     ),
                     SizedBox(height: 25),
                     Row(
                       children: [
                         Expanded(
-                          flex:1,
+                          flex: 1,
                           child: GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               setState(() {
                                 isOtpSelected = true;
                                 isEmailSelected = false;
@@ -393,23 +383,33 @@ class _LoginState extends State<Login> {
                             child: Container(
                               padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: isOtpSelected ? AppColors.primaryColor : Colors.white,
+                                color: isOtpSelected
+                                    ? AppColors.primaryColor
+                                    : Colors.white,
                                 border: Border(
                                   top: BorderSide(
-                                    color: isOtpSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isOtpSelected ? 0.5 :0.5,
+                                    color: isOtpSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isOtpSelected ? 0.5 : 0.5,
                                   ),
                                   bottom: BorderSide(
-                                    color: isOtpSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isOtpSelected ? 0.5 :0.5,
+                                    color: isOtpSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isOtpSelected ? 0.5 : 0.5,
                                   ),
                                   left: BorderSide(
-                                    color: isOtpSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isOtpSelected ? 0.5 :0.5,
+                                    color: isOtpSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isOtpSelected ? 0.5 : 0.5,
                                   ),
                                   right: BorderSide(
-                                    color: isOtpSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isOtpSelected ? 0.5 :0.5,
+                                    color: isOtpSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isOtpSelected ? 0.5 : 0.5,
                                   ),
                                 ),
                               ),
@@ -417,16 +417,18 @@ class _LoginState extends State<Login> {
                                 textAlign: TextAlign.center,
                                 'With OTP',
                                 style: TextStyle(
-                                  color: isOtpSelected ? Colors.white : Colors.black,
+                                  color: isOtpSelected
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                               ),
                             ),
                           ),
                         ),
                         Expanded(
-                          flex:1,
+                          flex: 1,
                           child: GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               setState(() {
                                 isOtpSelected = false;
                                 isEmailSelected = true;
@@ -435,23 +437,33 @@ class _LoginState extends State<Login> {
                             child: Container(
                               padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: isEmailSelected ? AppColors.primaryColor : Colors.white,
+                                color: isEmailSelected
+                                    ? AppColors.primaryColor
+                                    : Colors.white,
                                 border: Border(
                                   top: BorderSide(
-                                    color: isEmailSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isEmailSelected ? 0.5 :0.5,
+                                    color: isEmailSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isEmailSelected ? 0.5 : 0.5,
                                   ),
                                   bottom: BorderSide(
-                                    color: isEmailSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isEmailSelected ? 0.5 :0.5,
+                                    color: isEmailSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isEmailSelected ? 0.5 : 0.5,
                                   ),
                                   right: BorderSide(
-                                    color: isEmailSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isEmailSelected ? 0.5 :0.5,
+                                    color: isEmailSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isEmailSelected ? 0.5 : 0.5,
                                   ),
                                   left: BorderSide(
-                                    color: isEmailSelected ? AppColors.primaryColor : Colors.black,
-                                    width: isEmailSelected ? 0.5 :0.5,
+                                    color: isEmailSelected
+                                        ? AppColors.primaryColor
+                                        : Colors.black,
+                                    width: isEmailSelected ? 0.5 : 0.5,
                                   ),
                                 ),
                               ),
@@ -459,7 +471,9 @@ class _LoginState extends State<Login> {
                                 'With Email',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: isEmailSelected ? Colors.white : Colors.black,
+                                  color: isEmailSelected
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                               ),
                             ),
@@ -468,10 +482,22 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(height: 15),
-                    isOtpSelected ? otpContainer(authController) : emailContainer(authController),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      child: isOtpSelected
+                          ? otpContainer(authController)
+                          : emailContainer(authController),
+                      transitionBuilder: (child, animation) => SlideTransition(
+                        child: child,
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                      ),
+                    ),
                     SizedBox(height: 15),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Get.offNamed(RouteHelper.getForgotPasswordPage());
                       },
                       child: const Text(
@@ -480,8 +506,7 @@ class _LoginState extends State<Login> {
                         style: TextStyle(
                             color: AppColors.primaryColor,
                             fontWeight: FontWeight.w500,
-                            fontSize: 16
-                        ),
+                            fontSize: 16),
                       ),
                     ),
                     SizedBox(height: 15),
@@ -499,14 +524,12 @@ class _LoginState extends State<Login> {
                             text: "Create an account",
                             style: const TextStyle(
                                 color: Colors.redAccent,
-                                fontWeight: FontWeight.w500
-                            ),
+                                fontWeight: FontWeight.w500),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 Get.offNamed(RouteHelper.getRegisterPage());
                               },
                           ),
-
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -523,21 +546,18 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget otpContainer(AuthController authController){
+  Widget otpContainer(AuthController authController) {
     return Container(
+      key: ValueKey(1),
       height: 130,
       child: Column(
         children: [
           Container(
             height: 40,
             decoration: BoxDecoration(
-                border: Border.all(
-                    color: Color(0xFFE3E8F0),
-                    width: 1.5
-                )
-            ),
+                border: Border.all(color: Color(0xFFE3E8F0), width: 1.5)),
             child: TextField(
-              textAlign: TextAlign.center ,
+              textAlign: TextAlign.center,
               controller: ecPhone,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
@@ -547,9 +567,9 @@ class _LoginState extends State<Login> {
                 ),
                 contentPadding: EdgeInsets.only(
                   left: 30,
-                  right: Dimensions.radius20/2,
-                  top: Dimensions.radius20/2,
-                  bottom: Dimensions.radius20/2,
+                  right: Dimensions.radius20 / 2,
+                  top: Dimensions.radius20 / 2,
+                  bottom: Dimensions.radius20 / 2,
                 ),
                 prefixIcon: Container(
                   width: 50,
@@ -566,8 +586,7 @@ class _LoginState extends State<Login> {
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
-                          color: Color(0xFF2a2a2a)
-                      ),
+                          color: Color(0xFF2a2a2a)),
                     ),
                   ),
                 ),
@@ -584,8 +603,7 @@ class _LoginState extends State<Login> {
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 13,
-                color: Colors.black87
-            ),
+                color: Colors.black87),
           ),
           SizedBox(height: 20),
           Container(
@@ -594,13 +612,10 @@ class _LoginState extends State<Login> {
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
                 color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(3)
-            ),
+                borderRadius: BorderRadius.circular(3)),
             child: GestureDetector(
-              onTap: (){
-
+              onTap: () {
                 otpLogin(authController);
-
               },
               child: const Center(
                 child: Text(
@@ -609,31 +624,26 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
-                      fontSize: 16
-                  ),
+                      fontSize: 16),
                 ),
               ),
             ),
           ),
-
         ],
       ),
     );
   }
 
-  Widget emailContainer(AuthController authController){
+  Widget emailContainer(AuthController authController) {
     return Container(
+      key: ValueKey(2),
       height: 160,
       child: Column(
         children: [
           Container(
             height: 40,
             decoration: BoxDecoration(
-                border: Border.all(
-                    color: Color(0xFFE3E8F0),
-                    width: 1.5
-                )
-            ),
+                border: Border.all(color: Color(0xFFE3E8F0), width: 1.5)),
             child: TextField(
               textAlign: TextAlign.start,
               textInputAction: TextInputAction.next,
@@ -646,9 +656,9 @@ class _LoginState extends State<Login> {
                 ),
                 contentPadding: EdgeInsets.only(
                   left: 20,
-                  right: Dimensions.radius20/2,
-                  top: Dimensions.radius20/2,
-                  bottom: Dimensions.radius20/2,
+                  right: Dimensions.radius20 / 2,
+                  top: Dimensions.radius20 / 2,
+                  bottom: Dimensions.radius20 / 2,
                 ),
                 filled: true,
                 fillColor: Colors.white,
@@ -661,11 +671,7 @@ class _LoginState extends State<Login> {
           Container(
             height: 40,
             decoration: BoxDecoration(
-                border: Border.all(
-                    color: Color(0xFFE3E8F0),
-                    width: 1.5
-                )
-            ),
+                border: Border.all(color: Color(0xFFE3E8F0), width: 1.5)),
             child: TextField(
               textAlign: TextAlign.start,
               textInputAction: TextInputAction.done,
@@ -678,9 +684,9 @@ class _LoginState extends State<Login> {
                 ),
                 contentPadding: EdgeInsets.only(
                   left: 20,
-                  right: Dimensions.radius20/2,
-                  top: Dimensions.radius20/2,
-                  bottom: Dimensions.radius20/2,
+                  right: Dimensions.radius20 / 2,
+                  top: Dimensions.radius20 / 2,
+                  bottom: Dimensions.radius20 / 2,
                 ),
                 filled: true,
                 fillColor: Colors.white,
@@ -691,7 +697,7 @@ class _LoginState extends State<Login> {
           ),
           SizedBox(height: 20),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               login(authController);
             },
             child: Container(
@@ -700,8 +706,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   color: AppColors.primaryColor,
-                  borderRadius: BorderRadius.circular(3)
-              ),
+                  borderRadius: BorderRadius.circular(3)),
               child: const Center(
                 child: Text(
                   'Login',
@@ -709,8 +714,7 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
-                      fontSize: 16
-                  ),
+                      fontSize: 16),
                 ),
               ),
             ),
@@ -724,30 +728,32 @@ class _LoginState extends State<Login> {
     String email = ecEmailCon.text;
     String pass = ecPassCon.text;
     if (email.isEmpty) {
-      showCustomSnakebar(
-          'Type your email',
-          title: "Email"
-      );
-    }else if(!GetUtils.isEmail(email)){
-      showCustomSnakebar(
-          'Type a valid email',
-          title: "Invalid Email"
-      );
-    }else if(pass.isEmpty){
-      showCustomSnakebar(
-          'Type your password',
-          title: "Password"
-      );
-    }else if(pass.length<6){
-      showCustomSnakebar(
-          'The password must be at least 6 characters.',
-          title: "Password"
-      );
-    }else{
-      authController.login(email,pass).then((status){
-        if(status.isSuccess){
-          Get.toNamed(RouteHelper.getAccountPage());
-        }else{
+      showCustomSnakebar('Type your email', title: "Email");
+    } else if (!GetUtils.isEmail(email)) {
+      showCustomSnakebar('Type a valid email', title: "Invalid Email");
+    } else if (pass.isEmpty) {
+      showCustomSnakebar('Type your password', title: "Password");
+    } else if (pass.length < 6) {
+      showCustomSnakebar('The password must be at least 6 characters.',
+          title: "Password");
+    } else {
+      authController.login(email, pass).then((status) {
+        if (status.isSuccess) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomePage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return child;
+              },
+            ),
+            // ModalRoute.withName(RouteHelper.getInitial()
+            ((route) => false),
+          );
+          // Get.toNamed(RouteHelper.getAccountPage());
+        } else {
           showCustomSnakebar(status.message);
         }
       });
@@ -757,24 +763,17 @@ class _LoginState extends State<Login> {
   void otpLogin(AuthController authController) {
     String phone = ecPhone.text;
     if (phone.isEmpty) {
-      showCustomSnakebar(
-          'Type your phone number',
-          title: "Phone"
-      );
-    }else if(!GetUtils.isPhoneNumber(phone)){
-      showCustomSnakebar(
-          'Type a valid phone number',
-          title: "Invalid Phone"
-      );
-    }else{
-      authController.sendOtp(phone).then((status){
-        if(status.isSuccess){
+      showCustomSnakebar('Type your phone number', title: "Phone");
+    } else if (!GetUtils.isPhoneNumber(phone)) {
+      showCustomSnakebar('Type a valid phone number', title: "Invalid Phone");
+    } else {
+      authController.sendOtp(phone).then((status) {
+        if (status.isSuccess) {
           Get.toNamed(RouteHelper.getVerifyOtpPage(phone));
-        }else{
+        } else {
           showCustomSnakebar(status.message);
         }
       });
     }
   }
-
 }

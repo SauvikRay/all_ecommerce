@@ -6,12 +6,15 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:skybuybd/controller/category_controller.dart';
 import 'package:skybuybd/controller/home_controller.dart';
+import 'package:skybuybd/models/product_details/product_details.dart';
 import 'package:skybuybd/pages/auth/login/login_page.dart';
 import 'package:skybuybd/utils/app_colors.dart';
 import 'package:skybuybd/utils/constants.dart';
 import 'package:skybuybd/utils/dimentions.dart';
 
 import '../../controller/category_product_controller.dart';
+import '../../new_cart/chatgpt.dart';
+import '../../new_cart/product_details_screen.dart';
 import '../../route/route_helper.dart';
 import '../home/home_page.dart';
 
@@ -23,17 +26,16 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   Future<void> _loadResources() async {
     await Get.find<HomeController>().getConversionRate();
     await Get.find<HomeController>().getShippingText();
     await Get.find<HomeController>().getHomePageItem();
     await Get.find<CategoryController>().getParentCategoryList();
-    await Get.find<CategoryProductController>().getShoeList();
-    await Get.find<CategoryProductController>().getBagList();
-    await Get.find<CategoryProductController>().getJewelryList();
-    await Get.find<CategoryProductController>().getBabyList();
-    await Get.find<CategoryProductController>().getWatchList();
+    // await Get.find<CategoryProductController>().getShoeList();
+    // await Get.find<CategoryProductController>().getBagList();
+    // await Get.find<CategoryProductController>().getJewelryList();
+    // await Get.find<CategoryProductController>().getBabyList();
+    // await Get.find<CategoryProductController>().getWatchList();
   }
 
   @override
@@ -46,74 +48,79 @@ class _SplashPageState extends State<SplashPage> {
       print(Dimensions.screenWidth);
     }
 
-    navigateToHome();
+    navigateToHome(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: AppColors.primaryColor,
-        child:Stack(
-
-          children: [
-            Positioned(
-              top: Dimensions.height200,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/logo/300w.png',
-                      height: Dimensions.height30*6,
-                      width: Dimensions.width30*5,
-                    ),
-                    //SizedBox(height: 5),
-                    Text(
-                      'Sky Buy',
+          width: double.infinity,
+          height: double.infinity,
+          color: AppColors.primaryColor,
+          child: Stack(
+            children: [
+              Positioned(
+                top: Dimensions.height200,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/logo/300w.png',
+                        height: Dimensions.height30 * 6,
+                        width: Dimensions.width30 * 5,
+                      ),
+                      //SizedBox(height: 5),
+                      Text(
+                        'Sky Buy',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 48,
+                            fontFamily: 'times new roman'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.only(bottom: Dimensions.height50),
+                  child: const Center(
+                    child: Text(
+                      '\u00a9 ${Constants.APP_NAME}',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontSize: 48,
-                          fontFamily: 'times new roman'
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: EdgeInsets.only(bottom: Dimensions.height50),
-                child: const Center(
-                  child: Text(
-                    '\u00a9 ${Constants.APP_NAME}',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20
+                          fontSize: 20),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        )
-      ),
+            ],
+          )),
     );
   }
 
-  navigateToHome() async {
-    await Future.delayed(const Duration(milliseconds: Constants.delay),(){});
-    Get.toNamed(RouteHelper.getInitial());
+  navigateToHome(BuildContext context) async {
+    await Future.delayed(const Duration(milliseconds: Constants.delay), () {});
+    if(mounted){
+    Navigator.pushNamed(context,RouteHelper.getInitial(),);
+    }
+
+    
+    // Get.toNamed(RouteHelper.getInitial());
+    // Get.toNamed(RouteHelper.getSingleProductPage("abb-675994746146"));
+    // Get.toNamed(RouteHelper.getSingleProductPage("abb-637685900967"));
+    // Get.toNamed(RouteHelper.getSingleProductPage("abb-669706795349"));
+    // Navigator.pushReplacement(context,
+    //     MaterialPageRoute(builder: (context) => ProdyctDetailsScreen()));
   }
-
 }
-
