@@ -2,6 +2,8 @@
 //
 //     final productModel = productModelFromJson(jsonString);
 
+//test comment
+
 import 'dart:convert';
 
 ProductModel productModelFromJson(String str) =>
