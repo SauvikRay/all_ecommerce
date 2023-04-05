@@ -1,23 +1,27 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:skybuybd/controller/cart_controller.dart';
 import 'package:skybuybd/controller/product_controller.dart';
 import 'package:skybuybd/models/category/category_product_model.dart';
 import 'package:skybuybd/models/product_details/product_details.dart';
 import 'package:skybuybd/models/product_details/product_details_model.dart';
-import 'package:skybuybd/pages/cart/cart_page.dart';
 import 'package:skybuybd/route/route_helper.dart';
+
 import '../../all_model_and_repository/product_details/model_product_varient_size.dart';
+import '../../all_model_and_repository/wishlist/wishlist_provider.dart';
 import '../../base/show_custom_snakebar.dart';
 import '../../controller/auth_controller.dart';
 import '../../controller/home_controller.dart';
-import '../../models/DeleteModel.dart';
 import '../../models/meta_data.dart';
 import '../../models/product/color_image.dart';
 import '../../models/product/extra_info.dart';
@@ -29,11 +33,6 @@ import '../../utils/constants.dart';
 import '../../utils/dimentions.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/big_text.dart';
-import 'package:get/get.dart';
-import '../home/widgets/dimond_bottom_bar.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:skybuybd/models/order_model.dart';
 
 class SingleProductPage extends StatefulWidget {
   final String slug;
@@ -45,6 +44,7 @@ class SingleProductPage extends StatefulWidget {
 
 class _SingleProductPageState extends State<SingleProductPage> {
   late bool isUserLoggedIn;
+  late WishlistProvider wishlistProvider;
 
   List<String> dropdownItems = [
     'Shipping Method: By Air (15-25) Days',
@@ -80,14 +80,13 @@ class _SingleProductPageState extends State<SingleProductPage> {
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   File? file;
-  List<ColorImageNew> newColorImage=[];
-
+  List<ColorImageNew> newColorImage = [];
 
   @override
   void initState() {
     super.initState();
     print("slug --> " + widget.slug);
-
+    wishlistProvider = Provider.of<WishlistProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         //priceFactor = Get.find<HomeController>().isConversionPriceLoaded ? Get.find<HomeController>().conversionRate() : 20.0;
@@ -1350,15 +1349,8 @@ class _SingleProductPageState extends State<SingleProductPage> {
             ),
           ]);
     }
-    
-
-
-
-
 
     Widget _buildBody(ProductController productController) {
-
-
       ProductDetailModel productDetailModel =
           productController.productDetailModel;
       ProductDetails productDetails = productDetailModel.productDetails!;
@@ -1605,7 +1597,8 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                                   // Product size selection table.
                                                   return GestureDetector(
                                                     onTap: () {
-                                                      productController.getSizeListForSpecificColor(
+                                                      productController
+                                                          .getSizeListForSpecificColor(
                                                               colorImgList[
                                                                       index]
                                                                   .vid);
@@ -2303,9 +2296,17 @@ class _SingleProductPageState extends State<SingleProductPage> {
             GestureDetector(
               onTap: () {
                 if (isUserLoggedIn) {
-                  Get.toNamed(RouteHelper.getWishListPage());
+                  wishlistProvider.addToWishlist(
+                    _productDetailModel.productDetails!.id!,
+                    _productDetailModel.productDetails!.title!,
+                    _productDetailModel.productDetails!.mainPictureUrl!,
+                    ((_productDetailModel.productDetails!.price!.originalPrice *
+                            priceFactor)
+                        .round()),
+                  );
                 } else {
-                  Get.toNamed(RouteHelper.loginPage);
+                  showCustomSnakebar('You need to login first!',
+                      title: 'Authentication error');
                 }
               },
               child: Container(
@@ -2316,47 +2317,22 @@ class _SingleProductPageState extends State<SingleProductPage> {
                     borderRadius:
                         BorderRadius.circular(Dimensions.radius15 / 3),
                     color: AppColors.addToCart),
-                child: GestureDetector(
-                  onTap: () {
-                    if (isUserLoggedIn) {
-                      Get.find<CartController>()
-                          .postWishList(
-                              _productDetailModel.productDetails!.id!,
-                              _productDetailModel.productDetails!.title!,
-                              _productDetailModel
-                                  .productDetails!.mainPictureUrl!,
-                              ((_productDetailModel.productDetails!.price!
-                                          .originalPrice *
-                                      priceFactor)
-                                  .round()))
-                          .then((response) {
-                        if (response.isSuccess) {
-                          showCustomSnakebar('Item added to wishlist.',
-                              title: 'Wishlist', color: Colors.green);
-                        }
-                      });
-                    } else {
-                      showCustomSnakebar('You need to login first!',
-                          title: 'Authentication error');
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.favorite_border_outlined,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: Dimensions.width10),
-                      Text(
-                        'Save',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Dimensions.font16,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.favorite_border_outlined,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: Dimensions.width10),
+                    Text(
+                      'Save',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: Dimensions.font16,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
                 ),
               ),
             ),

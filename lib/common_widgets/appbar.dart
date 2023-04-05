@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:skybuybd/models/wishlist_model.dart';
+import 'package:provider/provider.dart';
+import 'package:skybuybd/all_model_and_repository/wishlist/wishlist_provider.dart';
 import 'package:skybuybd/pages/account/account_page.dart';
 import 'package:skybuybd/pages/auth/login.dart';
 
@@ -39,7 +43,73 @@ class _CustomAppbarState extends State<CustomAppbar> {
   void initState() {
     // TODO: implement initState
     isUserLoggedIn = Get.find<AuthController>().isUserLoggedIn();
+
     super.initState();
+  }
+
+  final ImagePicker picker = ImagePicker();
+
+  _imageFromGallery() async {
+    XFile? xFile = (await picker.pickImage(source: ImageSource.gallery));
+    if (xFile != null) {
+      File imagePath = File(xFile.path);
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchPage(
+              searchKey: imagePath.path,
+              type: "image",
+            ),
+          ));
+    } else {}
+  }
+
+  _imageFromCamera() async {
+    XFile? xFile =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+    if (xFile != null) {
+      File imagePath = File(xFile.path);
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchPage(
+              searchKey: imagePath.path,
+              type: "image",
+            ),
+          ));
+    }
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from gallery'),
+                onTap: () {
+                  _imageFromGallery();
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Choose from camera'),
+                onTap: () {
+                  _imageFromCamera();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -93,13 +163,14 @@ class _CustomAppbarState extends State<CustomAppbar> {
                         // Get.toNamed(
                         //     // RouteHelper.getSearchPage(keyword, "keyword", ""));
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SearchPage(
-                             searchKey: keyword,
-                            type: "keyword",
-                            // filePath: filePath!
-                            ),)
-                        );
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchPage(
+                                searchKey: keyword,
+                                type: "keyword",
+                                // filePath: filePath!
+                              ),
+                            ));
                       }
 
                       //Enable the text field's focus node request after some delay
@@ -135,35 +206,17 @@ class _CustomAppbarState extends State<CustomAppbar> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              child: Stack(
-                children: [
-                  AppIcon(
-                    icon: CupertinoIcons.heart,
-                    backgroundColor: Colors.transparent,
-                    size: 50,
-                    iconSize: 28,
-                    iconColor: Colors.white,
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: AppIcon(
-                      icon: Icons.circle,
-                      size: 24,
-                      iconColor: Colors.white,
-                      backgroundColor: Colors.transparent,
+              child: Consumer<WishlistProvider>(
+                builder: (context, provider, child) {
+                  int wishlistCount = provider.wishlist!.length;
+                  return badges.Badge(
+                    badgeContent: Text('$wishlistCount'),
+                    child: Icon(
+                      CupertinoIcons.heart,
+                      size: 30,
                     ),
-                  ),
-                  Positioned(
-                    right: 8,
-                    top: 5,
-                    child: BigText(
-                      text: '0',
-                      size: 12,
-                      color: Colors.black,
-                    ),
-                  )
-                ],
+                  );
+                },
               ),
               onTap: () {
                 //Goto Wishlist
@@ -174,6 +227,9 @@ class _CustomAppbarState extends State<CustomAppbar> {
                   ),
                 );
               },
+            ),
+            SizedBox(
+              width: 5,
             ),
             GestureDetector(
               child: Stack(
@@ -232,34 +288,32 @@ class _CustomAppbarState extends State<CustomAppbar> {
               ),
               tooltip: 'Profile',
               onPressed: () {
-                if(islogin==0){
-                    isUserLoggedIn
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AccountPage(),
-                        ),
-                      )
-                    :  PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: Login(),
-                      withNavBar: true,
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                    
-
+                if (islogin == 0) {
+                  isUserLoggedIn
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AccountPage(),
+                          ),
+                        )
+                      : PersistentNavBarNavigator.pushNewScreen(
+                          context,
+                          screen: Login(),
+                          withNavBar: true,
+                          pageTransitionAnimation:
+                              PageTransitionAnimation.cupertino,
+                        );
                 }
-               
-                    setState(() {
-                      islogin=1;
-                    });
-                    // Navigator.pushAndRemoveUntil(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const Login(),
-                    //     ),
-                    //      (route) => false);
+
+                setState(() {
+                  islogin = 1;
+                });
+                // Navigator.pushAndRemoveUntil(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => const Login(),
+                //     ),
+                //      (route) => false);
               },
             ),
           ],
@@ -268,50 +322,3 @@ class _CustomAppbarState extends State<CustomAppbar> {
     );
   }
 }
-
-void _showPicker(context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext bc) {
-      return SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from gallery'),
-              onTap: () {
-                // _imageFromGallery();
-                Navigator.of(context).pop();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Choose from camera'),
-              onTap: () {
-                // _imageFromCamera();
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ),
-      );
-    },
-  );
-}
-
-// _imageFromGallery() async {
-//   _image = await _picker.pickImage(source: ImageSource.gallery);
-//   if (_image != null) {
-//     setState(() {
-//       file = File(_image!.path);
-//     });
-//     //saveInStorage(file!);
-//     if (file != null) {
-//       //showCustomSnakebar("Image picked successfully",isError: false,title: "Image",color: AppColors.primaryColor);
-//       //Get.find<ProductController>().uploadImage(file!);
-//       Get.toNamed(RouteHelper.getSearchPage("", "image", file!.path));
-//     } else {
-//       print("File is null");
-//     }
-//   }
-// }

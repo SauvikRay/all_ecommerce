@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:skybuybd/base/footer.dart';
-import 'package:skybuybd/controller/cart_controller.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:skybuybd/models/wishlist_model.dart';
 
+import '../../all_model_and_repository/wishlist/wishlist_provider.dart';
 import '../../base/show_custom_snakebar.dart';
 import '../../controller/auth_controller.dart';
 import '../../route/route_helper.dart';
@@ -13,11 +16,6 @@ import '../../utils/constants.dart';
 import '../../utils/dimentions.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/big_text.dart';
-import '../home/home_page.dart';
-import 'package:get/get.dart';
-import '../home/widgets/dimond_bottom_bar.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 class WishlistPage extends StatefulWidget {
   const WishlistPage({Key? key}) : super(key: key);
@@ -27,30 +25,30 @@ class WishlistPage extends StatefulWidget {
 }
 
 class _WishlistPageState extends State<WishlistPage> {
-
   late bool isUserLoggedIn;
 
-  List<Wishlist> wishlist = [];
+  // List<Wishlist> wishlist = [];
 
   //Image picker
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   File? file;
+  late WishlistProvider wishlistProvider;
 
   _imageFromCamera() async {
     _image =
-    await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (_image != null) {
       setState(() {
         file = File(_image!.path);
       });
       //saveInStorage(file!);
-      if(file != null){
+      if (file != null) {
         //showCustomSnakebar("Image picked successfully",isError: false,title: "Image",color: AppColors.primaryColor);
         //Get.find<ProductController>().uploadImage(file!);
-        Get.toNamed(RouteHelper.getSearchPage("","image",file!.path));
-      }else{
+        Get.toNamed(RouteHelper.getSearchPage("", "image", file!.path));
+      } else {
         print("File is null");
       }
     }
@@ -63,14 +61,13 @@ class _WishlistPageState extends State<WishlistPage> {
         file = File(_image!.path);
       });
       //saveInStorage(file!);
-      if(file != null){
+      if (file != null) {
         //showCustomSnakebar("Image picked successfully",isError: false,title: "Image",color: AppColors.primaryColor);
         //Get.find<ProductController>().uploadImage(file!);
-        Get.toNamed(RouteHelper.getSearchPage("","image",file!.path));
-      }else{
+        Get.toNamed(RouteHelper.getSearchPage("", "image", file!.path));
+      } else {
         print("File is null");
       }
-
     }
   }
 
@@ -107,10 +104,12 @@ class _WishlistPageState extends State<WishlistPage> {
   @override
   void initState() {
     super.initState();
+    wishlistProvider = Provider.of<WishlistProvider>(context, listen: false);
+    wishlistProvider.getWishlist();
     isUserLoggedIn = Get.find<AuthController>().isUserLoggedIn();
-    Get.find<CartController>().getWishList();
+    // Get.find<CartController>().getWishList();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     // Focus nodes are necessary
@@ -119,102 +118,93 @@ class _WishlistPageState extends State<WishlistPage> {
     return WillPopScope(
       child: SafeArea(
         child: Scaffold(
-          appBar: _buildAppBar(textFieldFocusNode,controller),
-          body: GetBuilder<CartController>(builder: (cartController){
-
-            wishlist = cartController.wishlist;
-
-            return cartController.isWishListLoaded ? SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    //color: Colors.redAccent,
-                    height: (wishlist.length*((Dimensions.height100*2)+Dimensions.height50)),
-                    padding: EdgeInsets.symmetric(horizontal: Dimensions.width10,vertical: Dimensions.height10),
-                    child: GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        childAspectRatio: 2/1.1,
-                        padding: EdgeInsets.zero,
-                        crossAxisCount: 1,
-                        crossAxisSpacing: 0,
-                        mainAxisSpacing: 0,
-                        children: wishlist.map((data) {
-                          return GestureDetector(
-                            onTap: (){
-                              //Get.toNamed(RouteHelper.getSingleProductPage(data.id!));
-                            },
-                            child: Card(
-                                child: Padding(
-                                  padding: EdgeInsets.all(Dimensions.width15/2),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: Dimensions.height20*4,
-                                        width: Dimensions.width50*2,
-                                        decoration: BoxDecoration(
-                                           image: DecorationImage(
-                                             image: NetworkImage(data.mainPictureUrl!),
-                                               fit: BoxFit.cover
-                                             ),
-                                             shape: BoxShape.rectangle,
-                                             borderRadius: BorderRadius.circular(Dimensions.radius15/3)
-                                          )
-                                      ),
-                                      SizedBox(height: Dimensions.height10),
-                                      Text(
-                                        data.title!,
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: Dimensions.height10),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "৳ ${data.originalPrice}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-                                          SizedBox(width: Dimensions.width30),
-                                          AppIcon(
-                                            icon: CupertinoIcons.delete,
-                                            iconColor: Colors.white,
-                                            backgroundColor: AppColors.primaryColor,
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )
+          appBar: _buildAppBar(textFieldFocusNode, controller),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Consumer<WishlistProvider>(
+              builder: (context, provider, child) {
+                List<Datum>? wishlist = provider.wishlist;
+                return GridView.builder(
+                  // controller: _xcrollController,
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 4 / 6.5),
+                  itemCount: wishlist!.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        // Get.toNamed(
+                        //     RouteHelper.getSingleProductPage(searchData[index].id));
+                      },
+                      child: Card(
+                        elevation: 3,
+                        // color: Colors.grey[300],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 150,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        wishlist[index].mainPictureUrl!),
+                                    fit: BoxFit.cover),
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15 / 3),
+                              ),
                             ),
-                          );
-                        }).toList()
-                    ),
-                  ),
-                  Container(
-                    child: const Footer(),
-                  ),
-                ],
-              ),
-            ) : const Center(child: CircularProgressIndicator());
-          }),
+                            SizedBox(height: Dimensions.height10),
+                            Text(
+                              wishlist[index].title!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: Dimensions.height10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "৳ ${wishlist[index].originalPrice}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: Dimensions.width30),
+                                AppIcon(
+                                  icon: CupertinoIcons.delete,
+                                  iconColor: Colors.white,
+                                  backgroundColor: AppColors.primaryColor,
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ),
       ),
-      onWillPop: () async{
+      onWillPop: () async {
         Navigator.pop(Get.context!);
         return false;
       },
     );
   }
 
-  AppBar _buildAppBar(FocusNode textFieldFocusNode,TextEditingController controller) {
+  AppBar _buildAppBar(
+      FocusNode textFieldFocusNode, TextEditingController controller) {
     return AppBar(
       backgroundColor: AppColors.primaryColor,
       elevation: 0,
-      toolbarHeight: Dimensions.height10*10,
+      toolbarHeight: Dimensions.height10 * 10,
       centerTitle: false,
       automaticallyImplyLeading: false,
       title: GestureDetector(
@@ -231,9 +221,7 @@ class _WishlistPageState extends State<WishlistPage> {
           preferredSize: Size.fromHeight(Dimensions.height56),
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width10,
-                vertical: Dimensions.height10
-            ),
+                horizontal: Dimensions.width10, vertical: Dimensions.height10),
             child: SizedBox(
               height: Dimensions.height45,
               child: TextField(
@@ -243,9 +231,9 @@ class _WishlistPageState extends State<WishlistPage> {
                     borderRadius: BorderRadius.circular(Dimensions.radius8),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.all(Dimensions.radius20/2),
+                  contentPadding: EdgeInsets.all(Dimensions.radius20 / 2),
                   prefixIcon: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       _showPicker(context);
                     },
                     child: const Icon(
@@ -254,16 +242,18 @@ class _WishlistPageState extends State<WishlistPage> {
                     ),
                   ),
                   suffixIcon: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       //Text Search
                       textFieldFocusNode.unfocus();
                       textFieldFocusNode.canRequestFocus = false;
 
                       String keyword = controller.text;
-                      if(keyword.isEmpty){
-                        showCustomSnakebar("Search keyword is empty!",isError: false,title: "Search Error");
-                      }else{
-                        Get.toNamed(RouteHelper.getSearchPage(keyword,"keyword",""));
+                      if (keyword.isEmpty) {
+                        showCustomSnakebar("Search keyword is empty!",
+                            isError: false, title: "Search Error");
+                      } else {
+                        Get.toNamed(
+                            RouteHelper.getSearchPage(keyword, "keyword", ""));
                       }
 
                       //Enable the text field's focus node request after some delay
@@ -292,8 +282,7 @@ class _WishlistPageState extends State<WishlistPage> {
                 ),
               ),
             ),
-          )
-      ),
+          )),
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -320,8 +309,8 @@ class _WishlistPageState extends State<WishlistPage> {
                     ),
                   ),
                   Positioned(
-                    right:8,
-                    top:5,
+                    right: 8,
+                    top: 5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -330,7 +319,7 @@ class _WishlistPageState extends State<WishlistPage> {
                   )
                 ],
               ),
-              onTap: (){
+              onTap: () {
                 //Goto Wishlist
                 Get.toNamed(RouteHelper.getWishListPage());
               },
@@ -356,8 +345,8 @@ class _WishlistPageState extends State<WishlistPage> {
                     ),
                   ),
                   Positioned(
-                    right:8,
-                    top:5,
+                    right: 8,
+                    top: 5,
                     child: BigText(
                       text: '0',
                       size: 12,
@@ -366,7 +355,7 @@ class _WishlistPageState extends State<WishlistPage> {
                   )
                 ],
               ),
-              onTap: (){
+              onTap: () {
                 //Goto Cart
                 Get.toNamed(RouteHelper.getInitial());
               },
@@ -382,7 +371,9 @@ class _WishlistPageState extends State<WishlistPage> {
               ),
               tooltip: 'Profile',
               onPressed: () {
-                isUserLoggedIn ? Get.toNamed(RouteHelper.getAccountPage()) : Get.toNamed(RouteHelper.getLoginPage());
+                isUserLoggedIn
+                    ? Get.toNamed(RouteHelper.getAccountPage())
+                    : Get.toNamed(RouteHelper.getLoginPage());
               },
             ),
           ],
@@ -390,6 +381,4 @@ class _WishlistPageState extends State<WishlistPage> {
       ],
     );
   }
-
 }
-

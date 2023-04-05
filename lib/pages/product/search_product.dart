@@ -1,18 +1,16 @@
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:skybuybd/all_model_and_repository/search/search_model.dart';
-import 'package:skybuybd/controller/category_controller.dart';
 import 'package:skybuybd/controller/product_controller.dart';
-import 'package:skybuybd/pages/home/home_page.dart';
-import 'package:skybuybd/pages/product/category_product.dart';
 
 import '../../all_model_and_repository/search/search_repository.dart';
 import '../../base/show_custom_snakebar.dart';
 import '../../common_widgets/appbar.dart';
 import '../../controller/auth_controller.dart';
-import '../../controller/home_controller.dart';
 import '../../models/category/category_product_model.dart';
 import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
@@ -20,14 +18,7 @@ import '../../utils/constants.dart';
 import '../../utils/dimentions.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/big_text.dart';
-
-import 'package:get/get.dart';
-
 import '../home/widgets/dimond_bottom_bar.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class SearchPage extends StatefulWidget {
   final String searchKey;
@@ -56,6 +47,9 @@ class _SearchPageState extends State<SearchPage> {
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   File? file;
+  int totalData = 0;
+  int _page = 1;
+  bool _showLoadingContainer = false;
 
   _imageFromCamera() async {
     _image =
@@ -116,43 +110,96 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-List<SearchData> searchData=[];
+  ScrollController _xcrollController = ScrollController();
+
+  List<SearchData> searchData = [];
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        //priceFactor = Get.find<HomeController>().isConversionPriceLoaded ? Get.find<HomeController>().conversionRate() : 20.0;
-        if (Get.find<HomeController>()
-            .getSharedPref()
-            .containsKey(Constants.CONVERSION_RATE)) {
-          priceFactor = Get.find<HomeController>()
-              .getSharedPref()
-              .getDouble(Constants.CONVERSION_RATE)!;
-        } else {
-          priceFactor = 20.0;
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {
+    //     if (Get.find<HomeController>()
+    //         .getSharedPref()
+    //         .containsKey(Constants.CONVERSION_RATE)) {
+    //       priceFactor = Get.find<HomeController>()
+    //           .getSharedPref()
+    //           .getDouble(Constants.CONVERSION_RATE)!;
+    //     } else {
+    //       priceFactor = 20.0;
+    //     }
+    //   });
+    // });
+
+    _xcrollController.addListener(() {
+      if (_xcrollController.position.pixels ==
+          _xcrollController.position.maxScrollExtent) {
+        setState(() {
+          _page++;
+        });
+        if (widget.type == 'keyword') {
+          _showLoadingContainer = true;
+          searchFunction();
+        } else if (widget.type == 'image') {
+          _showLoadingContainer = true;
+          imageSearchFunction();
         }
-      });
+      }
     });
 
     if (widget.type == "keyword") {
-      // Get.find<ProductController>().productSearchByKeyword(widget.searchKey);
       searchFunction();
     } else if (widget.type == "image") {
-      File file = File(widget.filePath!);
-      Get.find<ProductController>().uploadImage(file);
-      //Get.find<ProductController>().productSearchByImage(file.path);
+      imageSearchFunction();
     }
 
     isUserLoggedIn = Get.find<AuthController>().isUserLoggedIn();
   }
 
-  searchFunction() async {
-    var searchResponse =
-        await SearchRepository().searchedByKeyword(keyWord: widget.searchKey);
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    _xcrollController.dispose();
+    super.dispose();
+  }
+
+  imageSearchFunction() async {
+    var searchResponse = await SearchRepository()
+        .searchedByImage(image: widget.searchKey, page: _page);
     searchData.addAll(searchResponse.items.searchData!);
-    log(searchData.toString());
+    totalData = searchResponse.items.total;
+    _showLoadingContainer = false;
+    setState(() {});
+  }
+
+  searchFunction() async {
+    var searchResponse = await SearchRepository()
+        .searchedByKeyword(keyWord: widget.searchKey, page: _page);
+    searchData.addAll(searchResponse.items.searchData!);
+    totalData = searchResponse.items.total;
+    _showLoadingContainer = false;
+    setState(() {});
+  }
+
+  Container buildLoadingContainer() {
+    return Container(
+      height: _showLoadingContainer ? 40 : 0,
+      width: 200,
+      color: Colors.red,
+      child: Center(
+        child: Text(
+          totalData == searchData.length
+              ? 'No more products'
+              : 'Loading more products...',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -165,13 +212,8 @@ List<SearchData> searchData=[];
         resizeToAvoidBottomInset: false,
         backgroundColor: AppColors.pageBg,
         appBar: CustomAppbar(), //_buildAppBar(textFieldFocusNode),
-        body: GetBuilder<ProductController>(builder: (productController) {
-          return productController.isSearchComplete
-              ? _buildBody(productController)
-              : const Center(
-                  child:
-                      CircularProgressIndicator(color: AppColors.primaryColor));
-        }),
+        body: _buildBody(),
+
         bottomNavigationBar: _buildDiamondBottomNavigation(),
       ),
       onWillPop: () async {
@@ -420,148 +462,157 @@ List<SearchData> searchData=[];
     });
   }
 
-  Widget _buildBody(ProductController productController) {
-    searchedProdList = productController.searchedProdList;
-    print(productController.searchedProdList.length);
-
-    return productController.isSearchComplete
+  Widget _buildBody() {
+    return searchData.isNotEmpty
         ? Container(
-            padding: EdgeInsets.only(
-              left: Dimensions.width15,
-              right: Dimensions.width15,
-              top: Dimensions.width15,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Get.toNamed(RouteHelper.getInitial());
-                        },
-                        child: Text(
-                          'Home',
-                          style: TextStyle(
-                              fontSize: Dimensions.font14,
-                              color: AppColors.primaryColor),
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: Dimensions.iconSize16,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        widget.searchKey == '' ? widget.searchKey : 'Image',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(RouteHelper.getInitial());
+                      },
+                      child: Text(
+                        'Home',
                         style: TextStyle(
                             fontSize: Dimensions.font14,
-                            color: Colors.black.withOpacity(0.8)),
+                            color: AppColors.primaryColor),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height15),
-                  Container(
-                    height:
-                        ((searchedProdList.length / 2) * Dimensions.height200) +
-                            Dimensions.height20 * 3,
-                    child: GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        childAspectRatio: 1 / 1.1,
-                        padding: const EdgeInsets.only(
-                            left: 0, right: 0, top: 0, bottom: 0),
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 0,
-                        mainAxisSpacing: 0,
-                        children:
-                            productController.searchedProdList.map((data) {
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: Dimensions.iconSize16,
+                      color: Colors.black,
+                    ),
+                    Text(
+                      widget.type,
+                      style: TextStyle(
+                          fontSize: Dimensions.font14,
+                          color: Colors.black.withOpacity(0.8)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: Dimensions.height15),
+                Stack(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height - 275,
+                      child: GridView.builder(
+                        controller: _xcrollController,
+                        physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10),
+                        itemCount: searchData.length,
+                        itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              Get.toNamed(
-                                  RouteHelper.getSingleProductPage(data.id!));
+                              Get.toNamed(RouteHelper.getSingleProductPage(
+                                  searchData[index].id));
                             },
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                border: Border(
-                                  right: BorderSide(
-                                    color: AppColors.borderColor,
-                                    width: 1.0,
-                                  ),
-                                  top: BorderSide(
-                                    color: AppColors.borderColor,
-                                    width: 1.0,
-                                  ),
-                                  left: BorderSide(
-                                    color: AppColors.borderColor,
-                                    width: 1.0,
+                            child: Card(
+                              elevation: 3,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    right: BorderSide(
+                                      color: AppColors.borderColor,
+                                      width: 1.0,
+                                    ),
+                                    top: BorderSide(
+                                      color: AppColors.borderColor,
+                                      width: 1.0,
+                                    ),
+                                    left: BorderSide(
+                                      color: AppColors.borderColor,
+                                      width: 1.0,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Image.network(
-                                      data.mainPictureUrl!,
-                                      height: 120,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 5),
-                                    child: Text(
-                                      data.title!,
-                                      textAlign: TextAlign.end,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Image.network(
+                                        searchData[index].mainPictureUrl,
+                                        height: 60,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 5),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '৳ ${(data.price?.originalPrice * priceFactor).round()}',
-                                          textAlign: TextAlign.end,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 5),
+                                      child: Text(
+                                        searchData[index].title,
+                                        textAlign: TextAlign.end,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        Text(
-                                          'SOLD: 3242',
-                                          textAlign: TextAlign.end,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 12, color: Colors.grey),
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 5),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '৳ ${(searchData[index].price.originalPrice * priceFactor).round()}',
+                                            textAlign: TextAlign.end,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const Text(
+                                            'SOLD: 3242',
+                                            textAlign: TextAlign.end,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
-                        }).toList()),
-                  ),
-                ],
-              ),
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 10,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            buildLoadingContainer(),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
           )
         : Center(
