@@ -20,6 +20,7 @@ import '../pages/auth/login/otp_page.dart';
 import '../pages/category/subcategory_page.dart';
 import '../pages/home/home_page.dart';
 import '../pages/payment/payment_page.dart';
+import '../pages/product/new_product_page.dart';
 import '../pages/product/search_product.dart';
 import '../pages/seller/seller_page.dart';
 
@@ -41,6 +42,7 @@ class RouteHelper {
   static const String categoryProductPage = "/category-product";
   static const String searchPage = "/search-product";
   static const String sellerStorePage = "/seller-store";
+  static const String newProductPage = "/newProductPage";
   //static const String cartPage = "/cart";
 
   static String getSplashPage() => '$splashPage';
@@ -52,7 +54,9 @@ class RouteHelper {
   static String getForgotPasswordPage() => '$forgotPasswordPage';
   static String getInitial() => '$initial';
   static String getSingleProductPage(String slug) =>
-      '$singleProductView?slug=$slug';
+      '$singleProductView?slug=$slug'; 
+static String getNewSingleProductPage(String slug) =>
+      '$newProductPage?slug=$slug';
   static String getPaymentPage(String cartListJson) =>
       '$paymentPage?cartListJson=$cartListJson';
   static String getWishListPage() => '$wishListPage';
@@ -124,6 +128,13 @@ class RouteHelper {
         page: () {
           var slug = Get.parameters['slug'];
           return SingleProductPage(slug: slug!);
+        },
+        transition: Transition.fade),
+     GetPage(
+        name: newProductPage,
+        page: () {
+          var slug = Get.parameters['slug'];
+          return NewProductDetailsPage(slug: slug!);
         },
         transition: Transition.fade),
     GetPage(

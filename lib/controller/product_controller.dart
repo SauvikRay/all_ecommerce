@@ -76,6 +76,18 @@ class ProductController extends GetxController implements GetxService {
   List<CategoryProductModel> _sellerProductList = [];
   List<CategoryProductModel> get sellerProductList => _sellerProductList;
 
+  //For My Specific Model
+
+
+List <FormatedColorAndVarient> _formatedColorVarient=[];
+
+List <FormatedColorAndVarient>get formatedColorVarient=> _formatedColorVarient;
+
+
+clearAllData(){
+  formatedColorVarient.clear();
+  sellerProductList.clear();
+}
   Future<void> getProductDetails(String slug) async {
     _isProductDetailsLoaded = false;
 
@@ -118,6 +130,8 @@ class ProductController extends GetxController implements GetxService {
       _configuredItems = [];
       _colorImageList = [];
       _productSizeList = [];
+
+      _formatedColorVarient=[];
       _attributeList = _productDetailModel.productDetails!.attributes!;
       _configuredItems = _productDetailModel.productDetails!.configuredItems!;
 
@@ -135,7 +149,7 @@ class ProductController extends GetxController implements GetxService {
           _initialProductSizeList.add(ProductSize(i+1, _attributeList[i].value!, i+1==1 ? true : false));
         }*/
       }
-
+ 
       if (_colorImageList != null && _colorImageList.length > 0) {
         getSizeListForSpecificColor(
             _colorImageList != null ? _colorImageList[0].vid : "");
@@ -143,7 +157,51 @@ class ProductController extends GetxController implements GetxService {
 
       _sellerProductList = productDetailModel.SellerProductLists!;
 
-      _isProductDetailsLoaded = true;
+  
+
+      //For My Specic Model
+       for(int k = 0; k< _colorImageList.length;k++){
+          List<ProductSize>_sizedList=[];
+        // log("Color iamgeeee list ${colorImgList.length}");
+        // log("Color iamgeeee list vid ${colorItem.vid.length}");
+              _sizedList.clear();
+        for(int i =0;i<_configuredItems.length;i++){
+          // log("ConfiguredItems Length ${configuredItems.length} ");
+            if(_configuredItems[i].configurators!.length >=2){
+                // log("Size ache");
+              
+                for(int j =0;j<_configuredItems[i].configurators!.length;j++){
+                  // log("Configured ITems configurations:${configuredItems[i].configurators![j].vid}====${colorImgList[k].vid}");
+                  if(_configuredItems[i].configurators![j].vid == _colorImageList[k].vid){
+                    // log("Sob configure color ${configuredItems[i].configurators![1].vid} ");
+                    // log("matching VID length: ${matchingCount++}");
+                    // log("${i}, ${_configuredItems[i].id!}, ${configuredItems[i].configurators![1].vid!}, ${configuredItems[i].quantity!},${_colorImageList[k].vid}");
+                    _sizedList.add(ProductSize(i,_configuredItems[i].id!,_configuredItems[i].configurators![1].vid!,_colorImageList[k].vid,_configuredItems[i].quantity!,0, _configuredItems[i].price!.originalPrice,_colorImageList[k].vid,false));
+                }
+                } //j end
+  
+            }
+
+        }
+      // log("Sized List: $_sizedList");
+     
+      _formatedColorVarient.add(FormatedColorAndVarient(_colorImageList[k],_sizedList));
+        // log("Sized List: $_formatedColorVarient");
+      // _sizedList.clear();
+    
+    
+    }
+
+    // log( "Varient Length Specific Id:${_formatedColorVarient.length}");
+    // for(var data in _formatedColorVarient)
+    // {
+    //   log(data.colorImage.colorName);
+    //  for(var item in data.colorVarient){
+    //         log("item varient id ${item.id}");
+    //     }
+    //      log("kotobar ghurlo ");
+    // }
+    _isProductDetailsLoaded = true;
       update();
     } else {
       showCustomSnakebar("Product Loading Failed");
@@ -244,8 +302,8 @@ class ProductController extends GetxController implements GetxService {
     }
   }
 
-List <ColorImageNew> newColorImages=[];
-List <ProductSizedVarient> newSizedVarient=[];
+List<AllCororItemWithVarient> allColorItemsWithVarient=[];
+
   void getSizeListForSpecificColor(String vid) {
     _isSizeQueryFinished = false;
     _isSizeExist = false;
@@ -254,17 +312,18 @@ List <ProductSizedVarient> newSizedVarient=[];
     _productSizeList = [];
 
     if (_configuredItems.isNotEmpty) {
-      log("Configure Items${_configuredItems.length}");
+      log("Configure Items${_configuredItems.first.id}");
       for (int i = 0; i < _configuredItems.length; i++) {
         if (_configuredItems[i].configurators!.length >= 2) {
           _isSizeExist = true;
           update();
           for (int j = 0; j < _configuredItems[i].configurators!.length; j++) {
-            log("Configured ITems configurations:${_configuredItems[i].id}");
+            // log("Configured ITems configurations:${_configuredItems[i].id}");
             if (_configuredItems[i].configurators![j].vid! == vid) {
-              _productSizeList.add(ProductSize(i,_configuredItems[i].id!, _configuredItems[i].configurators![1].vid!,"",_configuredItems[i].quantity!,0,vid,false,));
+              _productSizeList.add(ProductSize(i,_configuredItems[i].id!, _configuredItems[i].configurators![1].vid!,"",_configuredItems[i].quantity!,0,_configuredItems[i].price!.originalPrice,vid,false,));
+        
             }
-            log("Last List ${_productSizeList.length}");
+            // log("Last List ${_productSizeList.length}");
           }
         } else {
           _isSizeExist = false;
@@ -274,64 +333,29 @@ List <ProductSizedVarient> newSizedVarient=[];
     } else {
       print("no configured item");
     }
+
+    log("The sized of product List ${_productSizeList.length}");
+    for(var data in _productSizeList){
+      allColorItemsWithVarient.add(AllCororItemWithVarient(data.id,data.configuredItemsId,_productSizeList));
+    }
+    log("The  allColorItemsWithVarient List ${allColorItemsWithVarient.length}");
+    
     _isSizeQueryFinished = true;
     update();
-               
+            
   }
-
+  
   void clearSearchData() {
     _searchedProdList = [];
     update();
   }
 
 
-//   getNewProductSizedListByColor(){
-//     newSizedVarient=[];
-   
-
-
-//       for(var colorImage in colorImageList){
-              
-//           _isSizeQueryFinished = false;
-//     _isSizeExist = false;
-//     update();
-
-//     _productSizeList = [];
-
-//     if (_configuredItems.isNotEmpty) {
-
-//       for (int i = 0; i < _configuredItems.length; i++) {
-//         if (_configuredItems[i].configurators!.length >= 2) {
-//           _isSizeExist = true;
-//           update();
-//           for (int j = 0; j < _configuredItems[i].configurators!.length; j++) {
-           
-//             if (_configuredItems[i].configurators![j].vid! == colorImage.vid) {
-    
-
-//                 newSizedVarient.add(
-//                 ProductSizedVarient(i,_configuredItems[i].id!,_configuredItems[i].configurators![1].vid!,"",_configuredItems[i].quantity!,0,colorImage.vid,false));
-         
-
-            
-//             }
-
-//           }
-//         } else {
-//           _isSizeExist = false;
-//           update();
-//         }
-//       }
-//     } else {
-//       print("no configured item");
-//     }
-//     _isSizeQueryFinished = true;
-//     update();
-
-//       }
-// // log("New Color IMage Lis ${newSizedVarient.length}");
-
-//   }
-
 }
 
+class AllCororItemWithVarient{
+  int id;
+  String configuredItemsId;
+  List<ProductSize> productSizeItem;
+  AllCororItemWithVarient(this.id,this.configuredItemsId,this.productSizeItem);
+}

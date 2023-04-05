@@ -16,7 +16,7 @@ class ProductDetailModel{
     this.SellerProductLists
   });
 
-  ProductDetailModel.fromJson(Map<String, dynamic> json) {
+  ProductDetailModel.fromJson(Map<dynamic, dynamic> json) {
     productDetails = json['item'] != null ? ProductDetails.fromJson(json["item"]) : null;
     exitWishList = json['exit_wishList'];
     if (json['relatedProducts'] != null) {

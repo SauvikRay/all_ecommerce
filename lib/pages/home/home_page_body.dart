@@ -12,11 +12,12 @@ import 'package:skybuybd/controller/category_controller.dart';
 import 'package:skybuybd/controller/category_product_controller.dart';
 import 'package:skybuybd/controller/home_controller.dart';
 import 'package:skybuybd/models/category/category_product_model.dart';
+import 'package:skybuybd/pages/product/new_product_page.dart';
 import 'package:skybuybd/utils/constants.dart';
 import 'package:skybuybd/utils/dimentions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import '../../models/category/category_model.dart';
+import '../../models/product_details/product_details_model.dart';
 import '../../route/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/app_icon.dart';
@@ -86,6 +87,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   Future<void> _loadResources() async {
     await Get.find<CategoryController>().getParentCategoryList();
+  
   }
 
   @override
@@ -105,6 +107,8 @@ class _HomePageBodyState extends State<HomePageBody> {
       });
     });
   }
+
+    ProductDetailModel  detailModel = ProductDetailModel();
 
   @override
   Widget build(BuildContext context) {
@@ -551,7 +555,13 @@ class _HomePageBodyState extends State<HomePageBody> {
                 children: controllerdata.map((data) {
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(RouteHelper.getSingleProductPage(data.itemId!));
+                      // Get.toNamed(RouteHelper.getSingleProductPage("abb-44720356117"));
+                      // Get.toNamed(RouteHelper.getSingleProductPage("abb-684349016759"));
+
+                      // Get.toNamed(RouteHelper.getSingleProductPage(data.itemId!));
+                      //abb-646775493118  Color name asse but color nai.
+                      Get.toNamed(RouteHelper.getNewSingleProductPage(data.itemId!));//("abb-684349016759"));
+
                     },
                     child: Container(
                       decoration: const BoxDecoration(

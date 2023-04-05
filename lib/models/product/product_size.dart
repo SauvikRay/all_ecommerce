@@ -5,6 +5,7 @@ class ProductSize {
   String color;
   int availableQty;
   int currentQty=0;
+  dynamic price;
   String vid;
   bool selected;
 
@@ -16,6 +17,7 @@ class ProductSize {
       this.color,
       this.availableQty,
       this.currentQty,
+      this.price,
       this.vid,
       this.selected,
 );

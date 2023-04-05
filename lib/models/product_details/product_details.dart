@@ -332,7 +332,7 @@ class ConfiguredItems {
   List<Configurators>? configurators;
   Price? price;
   List<QuantityRanges>? quantityRanges;
-  List<ProductSize>? productSizeList;
+  
 
   ConfiguredItems(
       {this.id,
@@ -341,7 +341,6 @@ class ConfiguredItems {
       this.configurators,
       this.price,
       this.quantityRanges,
-      this.productSizeList,
       });
 
   ConfiguredItems.fromJson(Map<String, dynamic> json) {

@@ -1,19 +1,9 @@
-class ColorImageNew{
-  String vid;
-  List<ProductSizedVarient> varient;
+import 'package:skybuybd/models/product/color_image.dart';
 
-  ColorImageNew(this.vid,this.varient);
-}
+import '../../models/product/product_size.dart';
 
-class ProductSizedVarient{
-  int id;
-  String configuredItemsId;
-  String size;
-  String color;
-  int availableQty;
-  int currentQty=0;
-  String vid;
-  bool selected;
-  ProductSizedVarient(this.id,this.configuredItemsId,this.size,this.color,this.availableQty,this.currentQty,this.vid,this.selected);
-  
+class FormatedColorAndVarient{
+  ColorImage colorImage;
+  List<ProductSize> colorVarient;
+  FormatedColorAndVarient(this.colorImage,this.colorVarient);
 }

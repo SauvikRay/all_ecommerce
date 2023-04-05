@@ -35,16 +35,17 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:skybuybd/models/order_model.dart';
 
-class SingleProductPage extends StatefulWidget {
+class NewProductDetailsPage extends StatefulWidget {
   final String slug;
-  const SingleProductPage({Key? key, required this.slug}) : super(key: key);
+  const NewProductDetailsPage({Key? key, required this.slug}) : super(key: key);
 
   @override
-  State<SingleProductPage> createState() => _SingleProductPageState();
+  State<NewProductDetailsPage> createState() => _NewProductDetailsPageState();
 }
 
-class _SingleProductPageState extends State<SingleProductPage> {
+class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
   late bool isUserLoggedIn;
+  List<ProductSize> sizedVarient=[];
 
   List<String> dropdownItems = [
     'Shipping Method: By Air (15-25) Days',
@@ -80,6 +81,7 @@ class _SingleProductPageState extends State<SingleProductPage> {
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   File? file;
+
 
   @override
   void initState() {
@@ -490,6 +492,18 @@ class _SingleProductPageState extends State<SingleProductPage> {
       return (val * priceFactor).round();
     }
 
+    int newPriceWithConfiguredItemId( List<ProductSize> sizedVarient,String sizedId){
+          
+    dynamic val =0.0;
+    // List<ProductSize> sizedVarient=sizedVarient;
+           for (var item in sizedVarient){
+                if(item.configuredItemsId == sizedId){
+               val = item.price;
+             }
+    }
+    return (val*priceFactor).round();
+}
+
     int findMiniPriceTableAvailableQty(
         ProductController controller, String vid) {
       int result = 0;
@@ -541,8 +555,12 @@ class _SingleProductPageState extends State<SingleProductPage> {
       return id;
     }
 
-    Widget priceTableNew(ProductController controller) {
-      if (productSizeList.isNotEmpty) {
+    Widget priceTableNew(
+      // ProductController controller,
+      List<ProductSize> sizeListVarient
+      ) {
+      // if (sizeListVarient.isNotEmpty) {
+    
         return DataTable(
           sortAscending: false,
           dataRowHeight: Dimensions.height20 * 4,
@@ -587,7 +605,7 @@ class _SingleProductPageState extends State<SingleProductPage> {
             ),
           ],
           rows: List.generate(
-            productSizeList.length,
+            sizeListVarient.length,
             (index) {
               return DataRow(cells: [
                 DataCell(
@@ -601,18 +619,19 @@ class _SingleProductPageState extends State<SingleProductPage> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 4,
                     child: Text(
-                        "৳${quantityRangeList.isNotEmpty ? (quantityRangeList[0].price!.originalPrice * priceFactor).round() : findPriceWithoutQtyRange(controller, productSizeList[index].configuredItemsId)}",
+                        "৳${quantityRangeList.isNotEmpty ? (quantityRangeList[0].price!.originalPrice * priceFactor).round() : newPriceWithConfiguredItemId(sizeListVarient,sizeListVarient[index].configuredItemsId)}",
+                      //  'pore dekhtisi',
                         textAlign: TextAlign.center),
                   ),
                 ),
-                DataCell(productSizeList[index].currentQty == 0
+                DataCell(sizeListVarient[index].currentQty == 0
                     ? GestureDetector(
                         onTap: () {
                           // updateSelected( productSizeList[index]);
-                          log("size id :${productSizeList[index].id} ");
+                          log("size id :${sizeListVarient[index].id} ");
                           setState(() {
-                            productSizeList[index].currentQty =
-                                productSizeList[index].currentQty + 1;
+                            sizeListVarient[index].currentQty =
+                                sizeListVarient[index].currentQty + 1;
                           });
                         },
                         child: Container(
@@ -658,8 +677,8 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          productSizeList[index].currentQty =
-                                              productSizeList[index]
+                                          sizeListVarient[index].currentQty =
+                                             sizeListVarient[index]
                                                       .currentQty -
                                                   1;
                                         });
@@ -735,7 +754,7 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                       color: Colors.white,
                                       child: Center(
                                         child: Text(
-                                          productSizeList[index]
+                                          sizeListVarient[index]
                                               .currentQty
                                               .toString(),
                                           textAlign: TextAlign.center,
@@ -748,8 +767,8 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          productSizeList[index].currentQty =
-                                              productSizeList[index]
+                                          sizeListVarient[index].currentQty =
+                                              sizeListVarient[index]
                                                       .currentQty +
                                                   1;
                                         });
@@ -826,7 +845,7 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                 color: Colors.white,
                                 child: Center(
                                   child: Text(
-                                    productSizeList[index]
+                                   sizeListVarient[index]
                                         .availableQty
                                         .toString(),
                                     textAlign: TextAlign.center,
@@ -841,256 +860,12 @@ class _SingleProductPageState extends State<SingleProductPage> {
               ]);
             },
           ),
-
-          //  productSizeList
-          //     .map(
-          //       (item) => DataRow(cells: [
-          //         DataCell(
-          //           SizedBox(
-          //             width: MediaQuery.of(context).size.width / 4,
-          //             child: Text(item.size, textAlign: TextAlign.center),
-          //           ),
-          //         ),
-          //         DataCell(
-          //           SizedBox(
-          //             width: MediaQuery.of(context).size.width / 4,
-          //             child: Text(
-          //                 "৳${quantityRangeList.isNotEmpty ? (quantityRangeList[0].price!.originalPrice * priceFactor).round() : findPriceWithoutQtyRange(controller, item.configuredItemsId)}",
-          //                 textAlign: TextAlign.center),
-          //           ),
-          //         ),
-          //         DataCell(
-          //           item.selected
-          //               ? Center(
-          //                   child: SingleChildScrollView(
-          //                     scrollDirection: Axis.horizontal,
-          //                     child: Column(
-          //                       mainAxisAlignment: MainAxisAlignment.center,
-          //                       crossAxisAlignment: CrossAxisAlignment.center,
-          //                       children: [
-          //                         Container(
-          //                           width: MediaQuery.of(context).size.width / 4,
-          //                           decoration: const BoxDecoration(
-          //                             border: Border(
-          //                               bottom: BorderSide(
-          //                                   width: 1.5, color: Color(0xFF14395c)),
-          //                               top: BorderSide(
-          //                                   width: 1.5, color: Color(0xFF14395c)),
-          //                             ),
-          //                             color: Colors.white,
-          //                           ),
-          //                           child: Row(
-          //                             mainAxisAlignment:
-          //                                 MainAxisAlignment.spaceBetween,
-          //                             children: [
-          //                               //Remove Button
-          //                               GestureDetector(
-          //                                 onTap: () {
-          //                                   if (isUserLoggedIn) {
-          //                                     if (item.availableQty <= 0) {
-          //                                       showCustomSnakebar(
-          //                                           "Out of stock!");
-          //                                     } else if (item.currentQty <= 1) {
-          //                                       showCustomSnakebar(
-          //                                           "Quantity Can't be less than 1");
-          //                                     } else {
-          //                                       print('Minus clicked');
-          //                                       setState(() {
-          //                                         item.currentQty--;
-          //                                       });
-          //                                       ProductDetails prodDetail =
-          //                                           _productDetailModel
-          //                                               .productDetails!;
-
-          //                                       String data = jsonEncode(buildCartMetaData(
-          //                                               controller,
-          //                                               item.configuredItemsId,
-          //                                               item.currentQty,
-          //                                               quantityRangeList
-          //                                                       .isNotEmpty
-          //                                                   ? (quantityRangeList[
-          //                                                                   0]
-          //                                                               .price!
-          //                                                               .originalPrice *
-          //                                                           priceFactor)
-          //                                                       .round()
-          //                                                   : findPriceWithoutQtyRange(
-          //                                                       controller,
-          //                                                       item.configuredItemsId))
-          //                                           .toJson());
-
-          //                                       //Cart Post
-          //                                       Get.find<CartController>()
-          //                                           .cartPost(
-          //                                               prodDetail
-          //                                                   .id!, //id ->Product detail id
-          //                                               0, //checked
-          //                                               0, //QuantityRanges
-          //                                               prodDetail.title!, //Title
-          //                                               data, //ItemData
-          //                                               0, //minQuantity
-          //                                               0, //localDelivery
-          //                                               0, //shippingRate
-          //                                               0, //BatchLotQuantity
-          //                                               prodDetail
-          //                                                   .nextLotQuantity!, //NextLotQuantity
-          //                                               prodDetail
-          //                                                   .actualWeightInfo!
-          //                                                   .weight, // ActualWeight
-          //                                               prodDetail
-          //                                                   .firstLotQuantity! //FirstLotQuantity
-          //                                               );
-          //                                     }
-          //                                   } else {
-          //                                     showCustomSnakebar(
-          //                                         'You are not logged in!',
-          //                                         title: "Authentication Error!");
-          //                                   }
-          //                                 },
-          //                                 child: Container(
-          //                                   width: Dimensions.width30,
-          //                                   height: Dimensions.height30,
-          //                                   color: AppColors.btnColorBlueDark,
-          //                                   child: const Icon(Icons.remove,
-          //                                       color: Colors.white),
-          //                                 ),
-          //                               ),
-          //                               //Quantity
-          //                               Container(
-          //                                 width: Dimensions.width30,
-          //                                 height: Dimensions.height30,
-          //                                 color: Colors.white,
-          //                                 child: Center(
-          //                                   child: Text(
-          //                                     item.currentQty.toString(),
-          //                                     textAlign: TextAlign.center,
-          //                                     style: const TextStyle(
-          //                                         color: Colors.black),
-          //                                   ),
-          //                                 ),
-          //                               ),
-          //                               //Add Button
-          //                               GestureDetector(
-          //                                 onTap: () {
-          //                                   if (isUserLoggedIn) {
-          //                                     if (item.availableQty <= 0) {
-          //                                       showCustomSnakebar(
-          //                                           "Out of stock!");
-          //                                     } else {
-          //                                       print('Plus clicked');
-          //                                       setState(() {
-          //                                         item.currentQty++;
-          //                                       });
-
-          //                                       ProductDetails prodDetail =
-          //                                           _productDetailModel
-          //                                               .productDetails!;
-
-          //                                       String data = jsonEncode(buildCartMetaData(
-          //                                               controller,
-          //                                               item.configuredItemsId,
-          //                                               item.currentQty,
-          //                                               quantityRangeList
-          //                                                       .isNotEmpty
-          //                                                   ? (quantityRangeList[
-          //                                                                   0]
-          //                                                               .price!
-          //                                                               .originalPrice *
-          //                                                           priceFactor)
-          //                                                       .round()
-          //                                                   : findPriceWithoutQtyRange(
-          //                                                       controller,
-          //                                                       item.configuredItemsId))
-          //                                           .toJson());
-
-          //                                       print("Data : ${data}");
-
-          //                                       //Cart Post
-          //                                       Get.find<CartController>()
-          //                                           .cartPost(
-          //                                               prodDetail
-          //                                                   .id!, //id ->Product detail id
-          //                                               0, //checked
-          //                                               0, //QuantityRanges
-          //                                               prodDetail.title!, //Title
-          //                                               data, //ItemData
-          //                                               0, //minQuantity
-          //                                               0, //localDelivery
-          //                                               0, //shippingRate
-          //                                               0, //BatchLotQuantity
-          //                                               prodDetail
-          //                                                   .nextLotQuantity!, //NextLotQuantity
-          //                                               prodDetail
-          //                                                   .actualWeightInfo!
-          //                                                   .weight, // ActualWeight
-          //                                               prodDetail
-          //                                                   .firstLotQuantity! //FirstLotQuantity
-          //                                               );
-          //                                     }
-          //                                   } else {
-          //                                     showCustomSnakebar(
-          //                                         'You are not logged in!',
-          //                                         title: "Authentication Error!");
-          //                                   }
-          //                                 },
-          //                                 child: Container(
-          //                                   width: Dimensions.width30,
-          //                                   height: Dimensions.height30,
-          //                                   color: AppColors.btnColorBlueDark,
-          //                                   child: const Icon(Icons.add,
-          //                                       color: Colors.white),
-          //                                 ),
-          //                               ),
-          //                             ],
-          //                           ),
-          //                         ),
-          //                         Container(
-          //                           width: MediaQuery.of(context).size.width / 3,
-          //                           height: Dimensions.height30,
-          //                           color: Colors.white,
-          //                           child: Center(
-          //                             child: Text(
-          //                               item.availableQty.toString(),
-          //                               textAlign: TextAlign.center,
-          //                               style:
-          //                                   const TextStyle(color: Colors.black),
-          //                             ),
-          //                           ),
-          //                         ),
-          //                       ],
-          //                     ),
-          //                   ),
-          //                 )
-          //               : GestureDetector(
-          //                   onTap: () {
-          //                     updateSelected(item);
-          //                   },
-          //                   child: Container(
-          //                     height: Dimensions.height20 * 2,
-          //                     width: MediaQuery.of(context).size.width / 3,
-          //                     alignment: Alignment.center,
-          //                     decoration: BoxDecoration(
-          //                         borderRadius: BorderRadius.circular(
-          //                             Dimensions.radius15 / 3),
-          //                         color: AppColors.btnColorBlueDark),
-          //                     child: Text(
-          //                       'Add',
-          //                       style: TextStyle(
-          //                           color: Colors.white,
-          //                           fontSize: Dimensions.font16,
-          //                           fontWeight: FontWeight.w500),
-          //                     ),
-          //                   ),
-          //                 ),
-          //         ),
-          //       ]),
-          //     )
-          //     .toList(),
         );
-      }
-      return CircularProgressIndicator(
-        color: Colors.red,
-      );
+      
+      // }
+      // return CircularProgressIndicator(
+      //   color: Colors.red,
+      // );
     }
 
     Widget _miniPriceTable(
@@ -1350,12 +1125,13 @@ class _SingleProductPageState extends State<SingleProductPage> {
     }
     
 
+  List<FormatedColorAndVarient> formatedColorAndVarient=[];
 
 
 
 
-    Widget _buildBody(ProductController productController) {
-
+    Widget buildBody(ProductController productController) {
+  
 
       ProductDetailModel productDetailModel =
           productController.productDetailModel;
@@ -1374,6 +1150,8 @@ class _SingleProductPageState extends State<SingleProductPage> {
 
       //print("isSizeExist" +productController.isSizeExist.toString());
       //productSizeList = productController.getSizeListForSpecificColor(colorImgList != null ? colorImgList[0].vid : "");
+// Color and varient model data
+formatedColorAndVarient=productController.formatedColorVarient;
 
       return Container(
         color: Colors.white,
@@ -1403,6 +1181,7 @@ class _SingleProductPageState extends State<SingleProductPage> {
                       color: AppColors.newBorderColor,
                     ),
                     //Product Image Large + small image + Color
+                    
                     productController.isSizeQueryFinished
                         ? Column(
                             children: [
@@ -1526,43 +1305,29 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                             return GestureDetector(
                                               onTap: () {},
                                               child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  margin: EdgeInsets.only(
-                                                      right: Dimensions.width8),
+                                                  padding:const EdgeInsets.all(4),
+                                                  margin: EdgeInsets.only(right: Dimensions.width8),
                                                   decoration: BoxDecoration(
                                                       borderRadius: BorderRadius
-                                                          .circular(Dimensions
-                                                                  .radius15 /
-                                                              3),
-                                                      color: AppColors
-                                                          .btnColorBlueDark),
+                                                          .circular(Dimensions.radius15 /3),
+                                                      color: AppColors.btnColorBlueDark),
                                                   child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
+                                                    mainAxisAlignment:MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
                                                       Text(
                                                         "৳${(quantityRangeList[index].price!.originalPrice * priceFactor).round()}",
                                                         style: const TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                            fontWeight:FontWeight.w500),
                                                       ),
                                                       Text(
                                                         "${quantityRangeList[index].minQuantity} or more",
                                                         style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: Dimensions
-                                                                .font14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                            fontSize: Dimensions.font14,
+                                                            fontWeight:FontWeight.w500),
                                                       ),
                                                     ],
                                                   )),
@@ -1577,71 +1342,49 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                   ? Container(
                                       height: Dimensions.height20 * 6,
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment:CrossAxisAlignment.start,
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: Dimensions.width8),
+                                            padding: EdgeInsets.symmetric(vertical: Dimensions.width8),
                                             child: Text(
                                               "Color : ${colorName}",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: Dimensions.font14,
-                                                  fontWeight: FontWeight.w500),
+                                              style: TextStyle(color: Colors.black,fontSize: Dimensions.font14,fontWeight: FontWeight.w500),
                                             ),
                                           ),
                                           Container(
                                             height: Dimensions.height20 * 4,
                                             color: Colors.white,
                                             child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
+                                                scrollDirection: Axis.horizontal,
+                                      
+                                                itemCount: formatedColorAndVarient.length,
                                                 // itemCount: colorImgList.length,
-                                                itemCount: colorImgList.length,
                                                 itemBuilder: (context, index) {
                                                   // Product size selection table.
+                                                  // sizedVarient= formatedColorAndVarient.first.colorVarient;
                                                   return GestureDetector(
                                                     onTap: () {
-                                                      productController.getSizeListForSpecificColor(
-                                                              colorImgList[
-                                                                      index]
-                                                                  .vid);
-                                                      onButtonPressed(
-                                                          colorImgList[index]
-                                                              .colorImage,
-                                                          index,
-                                                          'color');
+                                                      // productController.getSizeListForSpecificColor(colorImgList[index].vid);
+                                                      productController.getSizeListForSpecificColor(formatedColorAndVarient[index].colorImage.vid);
+                                                      // onButtonPressed(colorImgList[index].colorImage, index,'color');
+                                                      onButtonPressed(formatedColorAndVarient[index].colorImage.colorImage, index,'color');
                                                       setState(() {
-                                                        colorName =
-                                                            colorImgList[index]
-                                                                .colorName;
+                                                        colorName = formatedColorAndVarient[index].colorImage.colorName;
+                                                        sizedVarient =formatedColorAndVarient[index].colorVarient;
                                                       });
+                                                      log("${sizedVarient}");
                                                     },
                                                     child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4),
-                                                      margin: EdgeInsets.only(
-                                                          right: Dimensions
-                                                              .width10),
+                                                      padding:const EdgeInsets.all(4),
+                                                      margin: EdgeInsets.only(right: Dimensions.width10),
                                                       decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius
-                                                              .circular(Dimensions
-                                                                      .radius15 /
-                                                                  3),
+                                                          borderRadius: BorderRadius.circular(Dimensions.radius15 /3),
                                                           border: Border.all(
-                                                            color: colorImgList[
-                                                                        index]
-                                                                    .selected
-                                                                ? AppColors
-                                                                    .primaryDark
-                                                                : AppColors
-                                                                    .newBorderColor,
+                                                            color: formatedColorAndVarient[index].colorImage.selected ? AppColors.primaryDark
+                                                                : AppColors.newBorderColor,
                                                           )),
                                                       child: Image.network(
-                                                        colorImgList[index]
-                                                            .colorImage,
+                                                        formatedColorAndVarient[index].colorImage.colorImage,
                                                         fit: BoxFit.cover,
                                                         height: 70,
                                                         width: 70,
@@ -1681,51 +1424,30 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                                     scrollDirection:
                                                         Axis.horizontal,
                                                     itemCount:
-                                                        colorImgList.length,
+                                                        formatedColorAndVarient.length,
                                                     itemBuilder:
                                                         (context, index) {
                                                       return GestureDetector(
                                                         onTap: () {
                                                           //productController.getSizeListForSpecificColor(colorImgList[index].vid);
-                                                          onButtonPressed(
-                                                              colorImgList[
-                                                                      index]
-                                                                  .colorImage,
-                                                              index,
-                                                              'color1');
+                                                          onButtonPressed(formatedColorAndVarient[index].colorImage.colorImage,index,'color1');
+                                                          // onButtonPressed(colorImgList[index].colorImage,index,'color1');
                                                           setState(() {
-                                                            colorName =
-                                                                colorImgList[
-                                                                        index]
-                                                                    .colorName;
+                                                            colorName =formatedColorAndVarient[index].colorImage.colorName;
                                                           });
                                                         },
                                                         child: Container(
                                                           padding: EdgeInsets.symmetric(
-                                                              horizontal: Dimensions
-                                                                      .width10 /
-                                                                  2,
-                                                              vertical: Dimensions
-                                                                      .height10 /
-                                                                  2),
-                                                          margin: EdgeInsets.only(
-                                                              right: Dimensions
-                                                                  .width10),
+                                                              horizontal: Dimensions.width10 /2,
+                                                              vertical: Dimensions.height10 /2),
+                                                          margin: EdgeInsets.only(right: Dimensions.width10),
                                                           decoration:
                                                               BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                          Dimensions.radius15 /
-                                                                              3),
-                                                                  border: Border
-                                                                      .all(
-                                                                    color: colorImgList[
-                                                                                index]
-                                                                            .selected
-                                                                        ? AppColors
-                                                                            .primaryDark
-                                                                        : AppColors
-                                                                            .newBorderColor,
+                                                                  borderRadius:BorderRadius.circular(Dimensions.radius15 /3),
+                                                                  border: Border.all(
+                                                                    color: colorImgList[index].selected
+                                                                        ? AppColors.primaryDark
+                                                                        : AppColors.newBorderColor,
                                                                   )),
                                                           child: Container(
                                                             height: 70,
@@ -1752,14 +1474,12 @@ class _SingleProductPageState extends State<SingleProductPage> {
                               SizedBox(height: Dimensions.height20),
                               //Product price list
                               productController.isSizeExist
-                                  ? Container(
-                                      height: productController
-                                                  .productSizeList.length *
-                                              (Dimensions.height20 * 4) +
-                                          Dimensions.height50,
+                                  ? 
+                                  Container(
+                                      height:sizedVarient.isNotEmpty? productController.productSizeList.length *(Dimensions.height20 * 4) +Dimensions.height50 : 0,
                                       width: double.infinity,
                                       color: Colors.white,
-                                      child: priceTableNew(productController),
+                                      child: sizedVarient.isNotEmpty? priceTableNew(sizedVarient) : Text("Product has different size"),
                                     )
                                   : Container(
                                       height: Dimensions.height100 +
@@ -1774,6 +1494,7 @@ class _SingleProductPageState extends State<SingleProductPage> {
                                           findMiniPriceTableAvailableQty(
                                               productController,
                                               miniPriceVid()))),
+                              
                               productController.isSizeExist
                                   ? SizedBox(height: Dimensions.height20)
                                   : Container(),
@@ -2405,25 +2126,23 @@ class _SingleProductPageState extends State<SingleProductPage> {
       );
     }
 
-    return SafeArea(
-      child: WillPopScope(
-        child: Scaffold(
-          backgroundColor: AppColors.pageBg,
-          appBar: _buildAppBar(textFieldFocusNode, controller),
-          body: GetBuilder<ProductController>(builder: (productController) {
-            return productController.isProductDetailsLoaded
-                ? _buildBody(productController)
-                : const Center(
-                    child: CircularProgressIndicator(
-                        color: AppColors.primaryColor));
-          }),
-          bottomNavigationBar: _buildBottomNav(),
-        ),
-        onWillPop: () async {
-          Get.toNamed(RouteHelper.getInitial());
-          return false;
-        },
+    return WillPopScope(
+      child: Scaffold(
+        backgroundColor: AppColors.pageBg,
+        appBar: _buildAppBar(textFieldFocusNode, controller),
+        body: GetBuilder<ProductController>(builder: (productController) {
+          return productController.isProductDetailsLoaded
+              ? buildBody(productController)
+              : const Center(
+                  child: CircularProgressIndicator(
+                      color: AppColors.primaryColor));
+        }),
+        bottomNavigationBar: _buildBottomNav(),
       ),
+      onWillPop: () async {
+        Get.toNamed(RouteHelper.getInitial());
+        return false;
+      },
     );
   }
 
@@ -2994,639 +2713,6 @@ class _SingleProductPageState extends State<SingleProductPage> {
     );
   }
 
-  Widget _priceTable() {
-    return DataTable(
-      sortAscending: false,
-      /*dataTextStyle: const TextStyle(
-        color: Colors.black,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-      ),*/
-      /*headingTextStyle: const TextStyle(
-          color: Colors.black,
-          fontSize: 12,
-          fontWeight: FontWeight.w600
-      ),*/
-      dataRowHeight: 80,
-      headingRowColor: MaterialStateProperty.all(AppColors.newBorderColor),
-      columnSpacing: 0,
-      horizontalMargin: 0,
-      showBottomBorder: true,
-      border: const TableBorder(
-        right: BorderSide(width: 1.0, color: AppColors.newBorderColor),
-        left: BorderSide(width: 1.0, color: AppColors.newBorderColor),
-      ),
-      columns: <DataColumn>[
-        DataColumn(
-          label: SizedBox(
-            width: MediaQuery.of(context).size.width / 4,
-            child: const Text(
-              'Size',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontStyle: FontStyle.normal),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: SizedBox(
-            width: MediaQuery.of(context).size.width / 4,
-            child: const Text(
-              'Price (৳)',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontStyle: FontStyle.normal),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: const Text(
-              'Quantity',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontStyle: FontStyle.normal),
-            ),
-          ),
-        ),
-      ],
-      rows: <DataRow>[
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('39', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('609', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                            top: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.remove, color: Colors.white),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
-                              child: Center(
-                                child: Text(
-                                  '0',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: 30,
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(
-                            '999',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('40', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('609', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                            top: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.remove, color: Colors.white),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
-                              child: Center(
-                                child: Text(
-                                  '0',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: 30,
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(
-                            '999',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('41', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('609', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                            top: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.remove, color: Colors.white),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
-                              child: Center(
-                                child: Text(
-                                  '0',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: 30,
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(
-                            '999',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('42', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('609', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                            top: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.remove, color: Colors.white),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
-                              child: Center(
-                                child: Text(
-                                  '0',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: 30,
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(
-                            '999',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('43', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('609', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                            top: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.remove, color: Colors.white),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
-                              child: Center(
-                                child: Text(
-                                  '0',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: 30,
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(
-                            '999',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('44', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('609', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                            top: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.remove, color: Colors.white),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
-                              child: Center(
-                                child: Text(
-                                  '0',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: 30,
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(
-                            '999',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('45', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: Text('609', textAlign: TextAlign.center),
-              ),
-            ),
-            DataCell(
-              Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                            top: BorderSide(
-                                width: 1.5, color: AppColors.primaryColor),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.remove, color: Colors.white),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
-                              child: Center(
-                                child: Text(
-                                  '0',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              color: AppColors.primaryColor,
-                              child: Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: 30,
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(
-                            '999',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   Widget _ApproxWeightTable() {
     return DataTable(
       sortAscending: false,
@@ -3725,3 +2811,149 @@ class _SingleProductPageState extends State<SingleProductPage> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// class NewProductDetailsPage extends StatefulWidget {
+//     final String slug;
+//   const NewProductDetailsPage({super.key,required this.slug});
+
+//   @override
+//   State<NewProductDetailsPage> createState() => _NewProductDetailsPageState();
+// }
+
+// class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
+
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     showTheProductDetails();
+//     super.initState();
+//   }
+//   var attributeItems=[];
+//   var configItems=[];
+//   var colorimgList=[];
+
+//   Map listMap={};
+//   List productVarientWithcolor=[];
+//   var xx=[];
+
+//    showTheProductDetails()async{
+//      var productDetailsData = await ProductDetailsApi().fetchProductDetailsApi("abb-684349016759");
+//     //  await productDetailsRxObj.fetchProductDetailsData("abb-684349016759");
+//     attributeItems =productDetailsData['item']['Attributes'];
+//     configItems = productDetailsData['item']['ConfiguredItems'];
+//     // log(configItems.toString());
+
+//     //Finding colorimage list from attributes
+//     for(var attribute in attributeItems){
+//       if(attribute["PropertyName"]== "Color" ||attribute["PropertyName"]=="Machining type" ){
+//         setState(() {
+          
+//         colorimgList.add({
+//           'Value':attribute["Value"],'Vid': attribute["Vid"]});
+//         });
+//       }
+//     }
+//   log("Colorimage List ${colorimgList}");
+
+
+//       for(var color in colorimgList){
+//           var sizedItems=[];
+//         // log("Color Name: ${color['Value']}");
+//           sizedItems.clear();
+//         for(var singleItem in configItems){
+//           // log(singleItem["Configurators"].toString());
+//           if(singleItem["Configurators"].length>=2){
+//             // log("${singleItem["Configurators"].length}");
+//             for(var item in singleItem["Configurators"]){
+//               if(item["Vid"] == color["Vid"]){
+//                   // log("Matching Item Details: ${item["Vid"]} == ${color["Vid"]}");
+//                     sizedItems.add({
+//                      'name': singleItem["Id"],
+//                       'color':color["Vid"]
+//                     });
+//               }
+//             }
+//           }
+//         }
+//           log("Sorted Sized item : ${sizedItems}");
+
+//       productVarientWithcolor.add(       {
+//               'color': "${color['Value']}",
+//               'varient':sizedItems
+//             });
+      
+    
+//           // sizedItems.clear();
+//       log("Formated data : $productVarientWithcolor");
+//       }
+
+
+    
+
+//     }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return RefreshIndicator(
+//       color: Colors.red,
+//       onRefresh: () async{
+//         attributeItems.clear();
+//        await showTheProductDetails();
+//       },
+//       child: Scaffold(
+//         appBar: CustomAppbar(),
+//         body: SingleChildScrollView(
+//           child: Column(children: [
+//             Text('New ProductDetails page')
+//           ]),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// // [
+
+// //   {
+// //     'color': 'black',
+// //     "varient":[
+// //               {
+// //                 "id": 1,
+// //                 'size': 32
+// //               },
+// //               {
+// //                 "id": 2,
+// //                 'size': 32
+// //               }
+// //     ],
+// //   },
+// //   {'color': '"white"',
+// //   "varient":[
+// //     {
+// //       "id": 1,
+// //       'size': 32
+// //     },
+// //     {
+// //       "id": 2,
+// //       'size': 32
+// //     }
+// //   ]}
+// // ]
