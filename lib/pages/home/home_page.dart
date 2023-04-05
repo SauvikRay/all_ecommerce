@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -7,8 +8,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:provider/provider.dart';
 import 'package:skybuybd/base/show_custom_snakebar.dart';
-import 'package:skybuybd/common_widgets/appbar.dart';
 import 'package:skybuybd/pages/cart/cart_page.dart';
 import 'package:skybuybd/pages/home/home_page_body.dart';
 import 'package:skybuybd/pages/home/widgets/complex_drawer1.dart';
@@ -19,7 +20,10 @@ import 'package:skybuybd/utils/dimentions.dart';
 import 'package:skybuybd/widgets/app_icon.dart';
 import 'package:skybuybd/widgets/big_text.dart';
 
+import '../../all_model_and_repository/wishlist/wishlist_provider.dart';
+import '../../common_widgets/appbar.dart';
 import '../../controller/auth_controller.dart';
+import '../../controller/cart_controller.dart';
 import '../../route/route_helper.dart';
 import '../account/account_page.dart';
 
@@ -36,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   int selectedIndex = 2;
   int selectedIndexBottom = 0;
   String text = "Home";
+  late WishlistProvider wishlistProvider;
 
   List pages = [
     HomePageBody(),
@@ -135,6 +140,20 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     print("okkkk");
+    wishlistProvider = Provider.of<WishlistProvider>(context, listen: false);
+    wishlistProvider.getWishlist();
+    getUserToken();
+  }
+
+  @override
+  void dispose() {
+    Get.find<CartController>().dispose();
+    super.dispose();
+  }
+
+  getUserToken() async {
+    String userToken = await Get.find<AuthController>().getUserTokel();
+    log(userToken);
   }
 
   // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -220,34 +239,36 @@ class _HomePageState extends State<HomePage> {
           EasyLoading.dismiss();
         }
       },
-      appBar: CustomAppbar(), //_buildAppBar(textFieldFocusNode, controller),
-      body: PersistentTabView(
-        context,
-        controller: _controller,
-        screens: _buildScreens(),
-        items: _navBarsItems(),
-        confineInSafeArea: true,
-        backgroundColor: Colors.grey[300]!,
-        handleAndroidBackButtonPress: true,
-        resizeToAvoidBottomInset: true,
-        stateManagement: true,
-        hideNavigationBarWhenKeyboardShows: true,
-        decoration: NavBarDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-          colorBehindNavBar: Colors.white,
-        ),
-        popAllScreensOnTapOfSelectedTab: true,
-        popActionScreens: PopActionScreensType.all,
-        navBarStyle: NavBarStyle.style15,
-        onItemSelected: (value) {
-          if (value == 1) {
-            // selectedItem = value + 1;
-            _scaffoldKey.currentState?.openDrawer();
-          }
-        },
-      ),
-      // bottomNavigationBar: _buildDiamondBottomNavigation(selectedIndex),
+      appBar: CustomAppbar(),
+      body: pages[selectedIndex],
+      // body: PersistentTabView(
+      // _buildAppBar(textFieldFocusNode, controller),
+      //   context,
+      //   controller: _controller,
+      //   screens: _buildScreens(),
+      //   items: _navBarsItems(),
+      //   confineInSafeArea: true,
+      //   backgroundColor: Colors.grey[300]!,
+      //   handleAndroidBackButtonPress: true,
+      //   resizeToAvoidBottomInset: true,
+      //   stateManagement: true,
+      //   hideNavigationBarWhenKeyboardShows: true,
+      //   decoration: NavBarDecoration(
+      //     borderRadius: BorderRadius.only(
+      //         topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+      //     colorBehindNavBar: Colors.white,
+      //   ),
+      //   popAllScreensOnTapOfSelectedTab: true,
+      //   popActionScreens: PopActionScreensType.all,
+      //   navBarStyle: NavBarStyle.style15,
+      //   onItemSelected: (value) {
+      //     if (value == 1) {
+      //       // selectedItem = value + 1;
+      //       _scaffoldKey.currentState?.openDrawer();
+      //     }
+      //   },
+      // ),
+      bottomNavigationBar: _buildDiamondBottomNavigation(selectedIndex),
     );
   }
 
@@ -463,7 +484,7 @@ class _HomePageState extends State<HomePage> {
       centerIcon: Icons.place,
       selectedIndex: selectedIndexBottom,
       onItemPressed: onPressed,
-      selectedColor: AppColors.btnColorBlueDark,
+      selectedColor: Colors.blue,
       unselectedColor: Colors.black,
     );
   }

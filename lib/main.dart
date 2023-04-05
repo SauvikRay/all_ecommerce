@@ -7,6 +7,7 @@ import 'package:skybuybd/helper/dependencies.dart' as dep;
 import 'package:skybuybd/route/route_helper.dart';
 import 'package:skybuybd/utils/constants.dart';
 
+import 'all_model_and_repository/wishlist/wishlist_provider.dart';
 import 'provider/cart_provider.dart';
 import 'provider/category_provider.dart';
 
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ProductProvider>(
           create: (context) => ProductProvider(),
+        ),
+        ChangeNotifierProvider<WishlistProvider>(
+          create: (context) => WishlistProvider(),
         )
       ],
       child: GetMaterialApp(

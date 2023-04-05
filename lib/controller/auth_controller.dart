@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -6,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skybuybd/base/show_custom_snakebar.dart';
 import 'package:skybuybd/models/core/Data.dart';
-import 'package:skybuybd/models/core/VerifyOtpResponse.dart';
-import 'package:skybuybd/models/registration/RegistrationResponse.dart';
 import 'package:skybuybd/models/core/User.dart' as localuser;
+import 'package:skybuybd/models/registration/RegistrationResponse.dart';
+
 import '../data/repository/auth_repo.dart';
 import '../models/registration/RegistrationErrorResponse.dart';
-import '../models/response_model.dart';
 import '../models/registration/signup_body_model.dart';
+import '../models/response_model.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthRepo authRepo;
@@ -54,6 +53,7 @@ class AuthController extends GetxController implements GetxService {
       if (kDebugMode) {
         log("Otp Verify Response : ${data.toJson().toString()}");
       }
+
       String token = response.body["data"]["token"];
       authRepo.saveUserToken(token);
       responseModel = ResponseModel(
@@ -162,5 +162,9 @@ class AuthController extends GetxController implements GetxService {
 
   bool clearSharedData() {
     return authRepo.clearSharedData();
+  }
+
+  Future<String> getUserTokel() {
+    return authRepo.getUserToken();
   }
 }

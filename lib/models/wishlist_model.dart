@@ -1,45 +1,46 @@
-class WishListModel {
-  dynamic status;
-  String? message;
-  List<Wishlist>? data;
+// To parse this JSON data, do
+//
+//     final wishlistResponse = wishlistResponseFromJson(jsonString);
 
-  WishListModel({this.status, this.message, this.data});
+import 'dart:convert';
 
-  WishListModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    if (json['wishlist'] != null) {
-      data = <Wishlist>[];
-      json['wishlist'].forEach((v) {
-        data!.add(Wishlist.fromJson(v));
-      });
-    }
-  }
+WishlistResponse wishlistResponseFromJson(String str) =>
+    WishlistResponse.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['wishlist'] = this.data!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+String wishlistResponseToJson(WishlistResponse data) =>
+    json.encode(data.toJson());
 
+class WishlistResponse {
+  WishlistResponse({
+    this.status,
+    this.message,
+    this.data,
+  });
+
+  String? status;
+  dynamic message;
+  List<Datum>? data;
+
+  factory WishlistResponse.fromJson(Map<String, dynamic> json) =>
+      WishlistResponse(
+        status: json["status"],
+        message: json["message"],
+        data: json["data"] == null
+            ? []
+            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
+      };
 }
 
-class Wishlist {
-  int? id;
-  String? itemId;
-  String? title;
-  String? mainPictureUrl;
-  int? originalPrice;
-  int? userId;
-  String? createdAt;
-  String? updatedAt;
-  String? deletedAt;
-
-  Wishlist({
+class Datum {
+  Datum({
     this.id,
     this.itemId,
     this.title,
@@ -48,32 +49,44 @@ class Wishlist {
     this.userId,
     this.createdAt,
     this.updatedAt,
-    this.deletedAt
+    this.deletedAt,
   });
 
-  Wishlist.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    itemId = json['ItemId'];
-    title = json['Title'];
-    mainPictureUrl = json['MainPictureUrl'];
-    originalPrice = json['OriginalPrice'];
-    userId = json['user_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-  }
+  int? id;
+  String? itemId;
+  String? title;
+  String? mainPictureUrl;
+  int? originalPrice;
+  int? userId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  dynamic deletedAt;
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['ItemId'] = this.itemId;
-    data['Title'] = this.title;
-    data['MainPictureUrl'] = this.mainPictureUrl;
-    data['OriginalPrice'] = this.originalPrice;
-    data['user_id'] = this.userId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['deleted_at'] = this.deletedAt;
-    return data;
-  }
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+        id: json["id"],
+        itemId: json["ItemId"],
+        title: json["Title"],
+        mainPictureUrl: json["MainPictureUrl"],
+        originalPrice: json["OriginalPrice"],
+        userId: json["user_id"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        deletedAt: json["deleted_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "ItemId": itemId,
+        "Title": title,
+        "MainPictureUrl": mainPictureUrl,
+        "OriginalPrice": originalPrice,
+        "user_id": userId,
+        "created_at": createdAt?.toIso8601String(),
+        "updated_at": updatedAt?.toIso8601String(),
+        "deleted_at": deletedAt,
+      };
 }
