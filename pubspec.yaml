@@ -57,6 +57,7 @@ flutter:
     - assets/cat/
     - assets/social/
     - assets/lotti/
+    - assets/
 
   fonts:
     - family: times new roman

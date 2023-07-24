@@ -6,12 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:provider/provider.dart';
 import 'package:skybuybd/controller/cart_controller.dart';
 import 'package:skybuybd/controller/product_controller.dart';
 import 'package:skybuybd/models/category/category_product_model.dart';
 import 'package:skybuybd/models/product_details/product_details.dart';
 import 'package:skybuybd/models/product_details/product_details_model.dart';
 import 'package:skybuybd/pages/cart/cart_page.dart';
+import 'package:skybuybd/provider/cart_provider.dart';
 import 'package:skybuybd/route/route_helper.dart';
 import '../../all_model_and_repository/product_details/model_product_varient_size.dart';
 import '../../base/show_custom_snakebar.dart';
@@ -82,6 +84,7 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
   XFile? _image;
   File? file;
 
+bool isVisible= false;
 
   @override
   void initState() {
@@ -207,6 +210,75 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
       }
     });
   }
+ List<FormatedColorAndVarient> formatedColorAndVarient=[];
+// For counting
+int selectedColorIndex=0;
+var item=[];
+List<FormatedColorAndVarient> cartedItemListWithFormat=[];
+int counted=0;
+itemCountWithId({required int totalCount,required int selectedId,required int selectedTableIndex, required int selectedColorIndex}){
+
+log("Total Count $totalCount,Selected variant $selectedId,Selected Table $selectedTableIndex,Selected Color $selectedColorIndex");
+    bool cartedItemfound = false;
+    bool varientItemfound = false;
+    
+    for (var data in cartedItemListWithFormat) {
+      if(data.id == selectedColorIndex)
+      { 
+          cartedItemfound = true;
+          break;
+      }
+      
+      if(cartedItemfound){
+      for(var variantItem in data.colorVarient)
+       { 
+        // log("${cartItem['id']} == $selectedId");
+        if (variantItem.id == selectedId) {     
+            varientItemfound = true;
+            break;
+          }
+        }
+      }
+    }
+
+    // cartedItemListWithFormat.add(FormatedColorAndVarient(
+    //   formatedColorAndVarient[selectedColorIndex].id,
+
+    // ));
+
+
+    // if (varientItemfound) {
+    //   counted=0;
+
+    //   item.removeWhere((element) => element['id']==selectedId);
+     
+    //   item.add({
+    //     "colorId": formatedColorAndVarient[selectedColorIndex].id,
+    //     "cartItems":[{'count': totalCount, 'id': selectedId}]
+    //     });
+    // }
+    // else{
+    
+    //   counted=0;
+    //   item.add({
+    //     "colorId": formatedColorAndVarient[selectedColorIndex].id,
+    //     "cartItems":[{'count': totalCount, 'id': selectedId}]
+    //     });
+       
+    // }
+log(item.toString());
+
+
+  // formatedColorAndVarient[selectedColorIndex].totalCountedbyIndex = counted;
+
+
+
+
+
+    return item;
+
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -555,12 +627,18 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
       return id;
     }
 
+ 
+
     Widget priceTableNew(
       // ProductController controller,
-      List<ProductSize> sizeListVarient
+      List<ProductSize> sizeListVarient,
+      int selectedColorIndex
       ) {
+        var itemWithId=[];
+        
+ 
       // if (sizeListVarient.isNotEmpty) {
-    
+    final cartCountProvider = Provider.of<CartProvider>(context);
         return DataTable(
           sortAscending: false,
           dataRowHeight: Dimensions.height20 * 4,
@@ -611,7 +689,7 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
                 DataCell(
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 4,
-                    child: Text(productSizeList[index].size,
+                    child: Text(sizeListVarient[index].size,
                         textAlign: TextAlign.center),
                   ),
                 ),
@@ -619,8 +697,8 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 4,
                     child: Text(
-                        "৳${quantityRangeList.isNotEmpty ? (quantityRangeList[0].price!.originalPrice * priceFactor).round() : newPriceWithConfiguredItemId(sizeListVarient,sizeListVarient[index].configuredItemsId)}",
-                      //  'pore dekhtisi',
+                        // "৳${quantityRangeList.isNotEmpty ? (quantityRangeList[0].price!.originalPrice * priceFactor).round() : newPriceWithConfiguredItemId(sizeListVarient,sizeListVarient[index].configuredItemsId)}",
+                       '${sizeListVarient[index].id}',
                         textAlign: TextAlign.center),
                   ),
                 ),
@@ -628,11 +706,13 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
                     ? GestureDetector(
                         onTap: () {
                           // updateSelected( productSizeList[index]);
-                          log("size id :${sizeListVarient[index].id} ");
+                          // log("size id :${sizeListVarient[index].id} ");
                           setState(() {
-                            sizeListVarient[index].currentQty =
-                                sizeListVarient[index].currentQty + 1;
+                        sizeListVarient[index].currentQty = sizeListVarient[index].currentQty + 1;
                           });
+                        itemCountWithId(totalCount:  sizeListVarient[index].currentQty,selectedId:  sizeListVarient[index].id,selectedTableIndex: index, selectedColorIndex:  selectedColorIndex);
+                          // itemWithId.addAll([{'quantity': sizeListVarient[index].currentQty,'id':sizeListVarient[index].id}]);
+                          // cartCountProvider.cartCountWithId(sizeListVarient[index].currentQty+1);
                         },
                         child: Container(
                           height: Dimensions.height20 * 2,
@@ -677,12 +757,11 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          sizeListVarient[index].currentQty =
-                                             sizeListVarient[index]
-                                                      .currentQty -
-                                                  1;
+                                          sizeListVarient[index].currentQty = sizeListVarient[index].currentQty - 1;
+                                      
                                         });
-
+                                        itemCountWithId(totalCount:  sizeListVarient[index].currentQty,selectedId:  sizeListVarient[index].id,selectedTableIndex: index,selectedColorIndex:  selectedColorIndex);
+                                      
                                         // if (isUserLoggedIn) {
                                         //   if ( productSizeList[index].availableQty <= 0) {
                                         //     showCustomSnakebar("Out of stock!");
@@ -767,11 +846,13 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          sizeListVarient[index].currentQty =
-                                              sizeListVarient[index]
-                                                      .currentQty +
-                                                  1;
+                                          sizeListVarient[index].currentQty =sizeListVarient[index].currentQty +1;
                                         });
+                                           itemCountWithId(totalCount:  sizeListVarient[index].currentQty,selectedId:  sizeListVarient[index].id,selectedTableIndex: index,selectedColorIndex:  selectedColorIndex);
+                                 
+                                        // for(var i in itemWithId){
+                                        //   log("${i['quantity']} ${i['id']}");
+                                        // }
                                         // if (isUserLoggedIn) {
                                         //   if ( productSizeList[index].availableQty <= 0) {
                                         //     showCustomSnakebar("Out of stock!");
@@ -1125,7 +1206,7 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
     }
     
 
-  List<FormatedColorAndVarient> formatedColorAndVarient=[];
+ 
 
 
 
@@ -1143,7 +1224,7 @@ class _NewProductDetailsPageState extends State<NewProductDetailsPage> {
       quantityRangeExist = productController.isQuantityRangeExist;
       quantityRangeList = productController.quantityRangeList;
       colorImgList = productController.colorImageList;
-      log("colorImgList : ${colorImgList.first.vid}");
+      // log("colorImgList : ${colorImgList.first.vid}");
       _myUrl.value = largeImage;
       productSizeList = productController.productSizeList;
       // productSizeList.addAll(productController.productSizeList);
@@ -1364,17 +1445,21 @@ formatedColorAndVarient=productController.formatedColorVarient;
                                                   // sizedVarient= formatedColorAndVarient.first.colorVarient;
                                                   return GestureDetector(
                                                     onTap: () {
-                                                      // productController.getSizeListForSpecificColor(colorImgList[index].vid);
+                                                      // log(formatedColorAndVarient[index].colorImage.id.toString());
                                                       productController.getSizeListForSpecificColor(formatedColorAndVarient[index].colorImage.vid);
                                                       // onButtonPressed(colorImgList[index].colorImage, index,'color');
                                                       onButtonPressed(formatedColorAndVarient[index].colorImage.colorImage, index,'color');
                                                       setState(() {
+                                                        selectedColorIndex = index;
                                                         colorName = formatedColorAndVarient[index].colorImage.colorName;
                                                         sizedVarient =formatedColorAndVarient[index].colorVarient;
                                                       });
-                                                      log("${sizedVarient}");
+                                                      // log("${sizedVarient}");
                                                     },
-                                                    child: Container(
+                                                    child:Stack(children: [
+
+                                              
+                                                     Container(
                                                       padding:const EdgeInsets.all(4),
                                                       margin: EdgeInsets.only(right: Dimensions.width10),
                                                       decoration: BoxDecoration(
@@ -1390,6 +1475,20 @@ formatedColorAndVarient=productController.formatedColorVarient;
                                                         width: 70,
                                                       ),
                                                     ),
+                                                    
+                                                      Visibility(
+                                                        visible: true,
+                                                        child: Positioned(
+                                                          right: 10,
+                                                          child: Container(
+                                                          height: 30,
+                                                          width: 30,
+                                                          decoration: BoxDecoration(color:Colors.blue,borderRadius: BorderRadius.circular(100)),
+                                                          child: Center(child: (formatedColorAndVarient[index].totalCountedbyIndex !=null)? Text("${formatedColorAndVarient[index].totalCountedbyIndex}"):Text("0")),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ],) 
                                                   );
                                                 }),
                                           ),
@@ -1420,13 +1519,9 @@ formatedColorAndVarient=productController.formatedColorVarient;
                                               Container(
                                                 height: Dimensions.height20 * 4,
                                                 color: Colors.white,
-                                                child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemCount:
-                                                        formatedColorAndVarient.length,
-                                                    itemBuilder:
-                                                        (context, index) {
+                                                child: ListView.builder(scrollDirection:Axis.horizontal,
+                                                    itemCount:formatedColorAndVarient.length,
+                                                    itemBuilder:(context, index) {
                                                       return GestureDetector(
                                                         onTap: () {
                                                           //productController.getSizeListForSpecificColor(colorImgList[index].vid);
@@ -1437,36 +1532,23 @@ formatedColorAndVarient=productController.formatedColorVarient;
                                                           });
                                                         },
                                                         child: Container(
-                                                          padding: EdgeInsets.symmetric(
-                                                              horizontal: Dimensions.width10 /2,
-                                                              vertical: Dimensions.height10 /2),
+                                                          padding: EdgeInsets.symmetric(horizontal: Dimensions.width10 /2,vertical: Dimensions.height10 /2),
                                                           margin: EdgeInsets.only(right: Dimensions.width10),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  borderRadius:BorderRadius.circular(Dimensions.radius15 /3),
-                                                                  border: Border.all(
-                                                                    color: colorImgList[index].selected
-                                                                        ? AppColors.primaryDark
-                                                                        : AppColors.newBorderColor,
+                                                          decoration:BoxDecoration(borderRadius:BorderRadius.circular(Dimensions.radius15 /3),border: Border.all(color: colorImgList[index].selected? AppColors.primaryDark: AppColors.newBorderColor,
                                                                   )),
                                                           child: Container(
                                                             height: 70,
                                                             width: 70,
-                                                            alignment: Alignment
-                                                                .center,
-                                                            child: Text(
-                                                              colorImgList[
-                                                                      index]
-                                                                  .colorName,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
+                                                            alignment: Alignment.center,
+                                                            child: Text( colorImgList[index].colorName,
+                                                              textAlign:TextAlign.center,
                                                             ),
                                                           ),
                                                         ),
                                                       );
                                                     }),
                                               ),
+                                            
                                             ],
                                           ),
                                         )
@@ -1479,7 +1561,7 @@ formatedColorAndVarient=productController.formatedColorVarient;
                                       height:sizedVarient.isNotEmpty? productController.productSizeList.length *(Dimensions.height20 * 4) +Dimensions.height50 : 0,
                                       width: double.infinity,
                                       color: Colors.white,
-                                      child: sizedVarient.isNotEmpty? priceTableNew(sizedVarient) : Text("Product has different size"),
+                                      child: sizedVarient.isNotEmpty? priceTableNew(sizedVarient,selectedColorIndex) : Text("Product has different size"),
                                     )
                                   : Container(
                                       height: Dimensions.height100 +

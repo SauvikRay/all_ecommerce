@@ -185,7 +185,7 @@ clearAllData(){
         }
       // log("Sized List: $_sizedList");
      
-      _formatedColorVarient.add(FormatedColorAndVarient(_colorImageList[k],_sizedList));
+      _formatedColorVarient.add(FormatedColorAndVarient(k, _colorImageList[k],_sizedList,0));
         // log("Sized List: $_formatedColorVarient");
       // _sizedList.clear();
     
